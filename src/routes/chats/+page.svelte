@@ -833,16 +833,16 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background-color: #1e1e1e;
+    background-color: var(--bg-app, #17181c);
   }
 
   .header-container {
     padding: 12px 0 0 0;
     position: relative;
     flex-shrink: 0;
+    background-color: var(--bg-app, #17181c);
   }
 
-  /* Official Max header structure */
   .header {
     display: flex;
     flex-direction: column;
@@ -853,6 +853,7 @@
   .info {
     display: flex;
     align-items: center;
+    position: relative;
   }
 
   .titleWrapper {
@@ -881,14 +882,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: auto;
-    position: absolute;
-    top: 0;
-    right: 12px;
-  }
-
-  .info {
-    position: relative;
   }
 
   .stories {
@@ -904,29 +897,8 @@
     width: 100%;
   }
 
-  /* Round primary button matching official */
   .new-chat-btn {
-    background: var(--button-background-color, #007AFF);
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #fff;
-    padding: 0;
-    transition: opacity 0.15s;
-    flex-shrink: 0;
-  }
-
-  .new-chat-btn:hover {
-    opacity: 0.85;
-  }
-
-  .contacts-btn {
-    background: rgba(118, 118, 128, 0.12);
+    background: var(--accent-primary, #248bfe);
     border: none;
     border-radius: 50%;
     width: 32px;
@@ -941,16 +913,28 @@
     flex-shrink: 0;
   }
 
+  .new-chat-btn:hover {
+    background: var(--accent-primary-hover, #1b74d9);
+  }
+
+  .contacts-btn {
+    background: var(--bg-surface-2, #26262e);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-primary, #fff);
+    padding: 0;
+    transition: background-color 0.15s;
+    flex-shrink: 0;
+  }
+
   .contacts-btn:hover {
-    background: rgba(118, 118, 128, 0.24);
-  }
-
-  .button--xsmall {
-    /* Size handled by specific button classes */
-  }
-
-  .button--primary {
-    /* Color handled by specific button classes */
+    background: var(--border-subtle, rgba(255, 255, 255, 0.08));
   }
 
   /* Selection mode header */
