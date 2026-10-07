@@ -153,10 +153,11 @@
         }}
       >
         <div class="avatarComposition">
-          <div class="avatarBadgeWrapper" style="--avatarSize: 64px;">
+          <div class="avatarBadgeWrapper" style="--avatarSize: 54px;">
             <Avatar
               {chat}
               contactId={peerId}
+              size={54}
               {selectionMode}
               {isSelected}
             />
@@ -168,7 +169,7 @@
         <span class="name">
           <span class="text">
             {#if isBot}
-              <img src="icons/bot.svg" class="bot-badge-icon" alt="" />
+              <svg class="bot-badge-icon" width="16" height="16"><use href="#icon_bot_mini"></use></svg>
             {/if}
             {title}
           </span>
@@ -190,6 +191,10 @@
         {/if}
       </div>
 
+      <div class="meta">
+        <span class="time" aria-label={timeDisplay}>{timeDisplay}</span>
+      </div>
+
       <span class="text preview-text">
         {#if isMe}<span class="you-prefix">Вы:</span>{/if}
         {#if attaches}
@@ -201,10 +206,6 @@
           {(shownMessage?.text || getSystemText(shownMessage, false) || "").replace(/<[^>]*>/g, "")}
         {/if}
       </span>
-
-      <div class="meta">
-        <span class="time" aria-label={timeDisplay}>{timeDisplay}</span>
-      </div>
 
       <div class="icons">
         {#if unread > 0}
@@ -259,7 +260,7 @@
 
   .cell {
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
     gap: 2px 8px;
     flex: 1;
@@ -275,10 +276,14 @@
 
   .avatar {
     grid-row: 1 / 3;
-    grid-column: 1;
+    grid-column: 1 / -1;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     flex-shrink: 0;
-    width: 64px;
-    height: 64px;
+    width: 54px;
+    height: 54px;
     cursor: pointer;
     border-radius: 50%;
     transition: opacity 0.15s ease;
@@ -288,22 +293,28 @@
     opacity: 0.88;
   }
 
+  .wrapper {
+    position: relative;
+    padding-left: 66px;
+    min-height: 70px;
+  }
+
   .avatarComposition {
     width: 100%;
     height: 100%;
   }
 
   .avatarBadgeWrapper {
-    width: var(--avatarSize, 64px);
-    height: var(--avatarSize, 64px);
+    width: var(--avatarSize, 54px);
+    height: var(--avatarSize, 54px);
   }
 
   .title {
     grid-row: 1;
-    grid-column: 2;
+    grid-column: 1;
     margin: 0;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     color: var(--text-primary, #fff);
     white-space: nowrap;
     overflow: hidden;
@@ -312,6 +323,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
+    line-height: 1.3;
   }
 
   .name {
@@ -341,27 +353,26 @@
   }
 
   .indicators {
-    grid-row: 1;
-    grid-column: 3;
-    display: flex;
+    display: inline-flex;
     gap: 4px;
     flex-shrink: 0;
     align-items: center;
+    margin-left: 4px;
   }
 
   .meta {
     grid-row: 1;
-    grid-column: 4;
+    grid-column: 2;
     display: flex;
     align-items: center;
     gap: 4px;
     flex-shrink: 0;
-    margin-left: auto;
+    justify-content: flex-end;
   }
 
   .preview-text {
     grid-row: 2;
-    grid-column: 2 / 5;
+    grid-column: 1;
     font-size: 14px;
     color: #8E8E93;
     white-space: nowrap;
@@ -372,6 +383,7 @@
     align-items: center;
     gap: 4px;
     margin: 0;
+    line-height: 1.3;
   }
 
   .preview-text .emoji img {
@@ -401,11 +413,12 @@
   .time {
     font-size: 12px;
     color: #8E8E93;
+    white-space: nowrap;
   }
 
   .icons {
     grid-row: 2;
-    grid-column: 4;
+    grid-column: 2;
     display: flex;
     gap: 4px;
     flex-shrink: 0;
@@ -472,11 +485,10 @@
   }
 
   .bot-badge-icon {
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-    vertical-align: -2px;
-    display: inline-block;
-    opacity: 0.85;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    color: #8E8E93;
   }
 </style>

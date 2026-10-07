@@ -78,23 +78,30 @@ export const mockFolders = [
   { id: "folder_channels", title: "Каналы", filters: [2] },
 ];
 
-export function injectMockData() {
-  return Promise.all([
+export async function injectMockData() {
+  const [api, session] = await Promise.all([
     import("$lib/stores/api.js"),
     import("$lib/stores/session.js"),
-  ]).then(([api, session]) => {
-    try {
-      api.currentUser.set(mockUser);
-      api.currentSessionChats.set(mockChats);
-      api.currentRealChats.set(mockChats.map((c) => c.id));
-      api.currentRealContacts.set(mockContacts.map((c) => c.id));
-      api.currentFolders.set(mockFolders);
-      api.currentlySyncing.set(false);
+  ]);
 
-      // Помечаем сессию как загруженную, чтобы layout отрендерил slot
-      session.default.update((s) => ({ ...s, loaded: true }));
-    } catch (e) {
-      console.warn("Mock injection failed:", e);
+  try {
+    api.currentUser.set(mockUser);
+    api.currentSessionChats.set(mockChats);
+    api.currentRealChats.set(mockChats.map((c) => c.id));
+    api.currentRealContacts.set(mockContacts.map((c) => c.id));
+    api.currentFolders.set(mockFolders);
+    api.currentlySyncing.set(false);
+
+    // Инжектим контакты через caching.js, чтобы они попали в knownContactIds
+    // и Avatar.svelte мог их найти
+    const caching = await import("$lib/utils/caching.js");
+    for (const c of mockContacts) {
+      try { caching.updateContact(c); } catch (_) {}
     }
-  });
+
+    // Помечаем сессию как загруженную, чтобы layout отрендерил slot
+    session.default.update((s) => ({ ...s, loaded: true }));
+  } catch (e) {
+    console.warn("Mock injection failed:", e);
+  }
 }
