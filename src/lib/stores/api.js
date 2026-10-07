@@ -26,7 +26,13 @@ export const currentRealContacts = writable([]);
 
 currentUser.subscribe(async userId => {
   if (userId === undefined) {
-    const account = await Accounts.getCurrentAccount();
+    let account;
+    try {
+      account = await Accounts.getCurrentAccount();
+    } catch {
+      currentUser.set(null);
+      return;
+    }
     if (!account) return currentUser.set(null);
     const data = await Accounts.getAccount(account.id);
     console.log('Loaded current account =', data);
