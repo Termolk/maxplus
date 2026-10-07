@@ -24,7 +24,10 @@ export default writable(API);
 export const currentRealChats = writable([]);
 export const currentRealContacts = writable([]);
 
+const isTauriEnv = typeof window !== "undefined" && !!window.__TAURI_INTERNALS__;
+
 currentUser.subscribe(async userId => {
+  if (!isTauriEnv) return;
   if (userId === undefined) {
     let account;
     try {
