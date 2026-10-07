@@ -12,7 +12,30 @@
   let draggingIndex = null;
 
   let lastReorderTime = 0;
-  const REORDER_COOLDOWN = 250; // должно быть близко к duration анимации
+  const REORDER_COOLDOWN = 250;
+
+  let tabsContainer;
+  let tabElements = [];
+
+  $: activeIndex = folders.findIndex(f => f === activeFolder);
+  $: if (activeIndex === -1) activeIndex = 0;
+
+  let activeTabWidth = 0;
+  let activeTabLeft = 0;
+
+  function updateSlideIndicator() {
+    if (!tabsContainer || !tabElements[activeIndex]) return;
+    const containerRect = tabsContainer.getBoundingClientRect();
+    const tabRect = tabElements[activeIndex].getBoundingClientRect();
+    activeTabWidth = tabRect.width;
+    activeTabLeft = tabRect.left - containerRect.left;
+  }
+
+  // Update indicator when active folder changes or folders reorder
+  $: if (activeIndex >= 0 && folders.length > 0) {
+    // Defer to after DOM update
+    requestAnimationFrame(updateSlideIndicator);
+  }
 
   function selectFolder(folder) {
     if (isEditing) return;
@@ -47,12 +70,11 @@
     }
 
     const elementUnderCursor = document.elementFromPoint(clientX, clientY);
-    const tabWrapper = elementUnderCursor?.closest(".tab-wrapper");
+    const tabEl = elementUnderCursor?.closest(".tab-item");
 
-    if (tabWrapper && tabWrapper.dataset.index) {
-      const hoverIndex = parseInt(tabWrapper.dataset.index);
+    if (tabEl && tabEl.dataset.index) {
+      const hoverIndex = parseInt(tabEl.dataset.index);
 
-      // наехали на другой элемент
       if (hoverIndex !== draggingIndex) {
         const newFolders = [...folders];
         const [movedItem] = newFolders.splice(draggingIndex, 1);
@@ -81,23 +103,30 @@
 />
 
 <div class="tabs-container">
-  <div class="tabs">
+  <div
+    class="tabs tabs--transition"
+    role="tablist"
+    bind:this={tabsContainer}
+    style="--active-tab-width: {activeTabWidth}px; --active-tab-left: {activeTabLeft}px;"
+  >
     {#each folders as folder, index (folder.id)}
       <div
         animate:flip={{ duration: 250, easing: quintOut }}
-        class="tab-wrapper"
+        class="tab-item"
         class:shaking={isEditing}
         class:dragging={draggingIndex === index}
         data-index={index}
         on:mousedown={(e) => handleStart(index, e)}
         on:touchstart|passive={(e) => handleStart(index, e)}
+        bind:this={tabElements[index]}
       >
         <button
           class="tab"
-          class:active={activeFolder === folder && !isEditing}
+          class:tab--active={activeFolder === folder && !isEditing}
+          role="tab"
           on:click={() => selectFolder(folder)}
         >
-          <span>{folder.title}</span>
+          {folder.title}
         </button>
 
         {#if isEditing && folder.id !== 0 && folder.id !== "all.chat.folder"}
@@ -116,12 +145,10 @@
               fill="none"
               stroke-linecap="round"
               stroke-linejoin="round"
-              ><path
-                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-              ></path><path
-                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-              ></path></svg
             >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
           </button>
         {/if}
       </div>
@@ -136,6 +163,8 @@
         +
       </button>
     {/if}
+
+    <div class="active-slide" aria-hidden="true"></div>
   </div>
 
   <button class="edit-btn" class:active={isEditing} on:click={toggleEditMode}>
@@ -148,7 +177,6 @@
     display: flex;
     width: 100%;
     align-items: center;
-    border-bottom: 1px solid #333;
     background: #1e1e1e;
     position: relative;
     z-index: 10;
@@ -166,13 +194,18 @@
     padding-right: 8px;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    position: relative;
   }
 
   .tabs::-webkit-scrollbar {
     display: none;
   }
 
-  .tab-wrapper {
+  .tabs--transition .active-slide {
+    transition: left 0.25s ease, width 0.25s ease;
+  }
+
+  .tab-item {
     position: relative;
     display: flex;
     align-items: center;
@@ -182,28 +215,18 @@
     flex-shrink: 0;
   }
 
-  .tab-wrapper.dragging {
+  .tab-item.dragging {
     opacity: 0.5;
     z-index: 100;
     pointer-events: none;
   }
 
   @keyframes shake {
-    0% {
-      transform: rotate(0deg);
-    }
-    25% {
-      transform: rotate(1.5deg) translateY(-1px);
-    }
-    50% {
-      transform: rotate(0deg);
-    }
-    75% {
-      transform: rotate(-1.5deg) translateY(1px);
-    }
-    100% {
-      transform: rotate(0deg);
-    }
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(1.5deg) translateY(-1px); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-1.5deg) translateY(1px); }
+    100% { transform: rotate(0deg); }
   }
 
   .shaking {
@@ -243,12 +266,10 @@
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    color: #999;
+    color: #8E8E93;
     white-space: nowrap;
     border-radius: 8px;
-    transition:
-      background 0.2s,
-      color 0.2s;
+    transition: background 0.2s, color 0.2s;
   }
 
   .shaking .tab {
@@ -261,20 +282,20 @@
   .tab:hover {
     color: #ccc;
   }
-  .tab.active {
+
+  .tab--active {
     color: #fff;
   }
 
-  .tab.active:not(.shaking .tab)::after {
-    content: "";
+  .active-slide {
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%) scaleX(1);
-    width: 80%;
+    left: var(--active-tab-left, 0px);
+    width: var(--active-tab-width, 0px);
     height: 3px;
-    background-color: #007afd;
+    background: #007AFF;
     border-radius: 3px 3px 0 0;
+    pointer-events: none;
   }
 
   .edit-btn {

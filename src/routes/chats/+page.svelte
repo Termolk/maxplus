@@ -543,13 +543,10 @@
               stroke="currentColor"
               stroke-width="2"
               fill="none"
-              ><line x1="18" y1="6" x2="6" y2="18"></line><line
-                x1="6"
-                y1="6"
-                x2="18"
-                y2="18"
-              ></line></svg
             >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
           <span class="selection-count">{selectedChats.size}</span>
         </div>
@@ -570,16 +567,11 @@
                 stroke="currentColor"
                 stroke-width="2"
                 fill="none"
-                ><path
-                  d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4a2 2 0 0 0-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM5.5 7A1.5 1.5 0 1 1 7 5.5 1.5 1.5 0 0 1 5.5 7z"
-                ></path></svg
               >
+                <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4a2 2 0 0 0-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM5.5 7A1.5 1.5 0 1 1 7 5.5 1.5 1.5 0 0 1 5.5 7z"></path>
+              </svg>
             </button>
-            <button
-              class="icon-btn"
-              on:click={muteNotifications}
-              title="Уведомления"
-            >
+            <button class="icon-btn" on:click={muteNotifications} title="Уведомления">
               <svg
                 viewBox="0 0 24 24"
                 width="20"
@@ -587,9 +579,10 @@
                 stroke="currentColor"
                 stroke-width="2"
                 fill="none"
-                ><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
-                ></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg
               >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
             </button>
             <button class="icon-btn" on:click={addToFolder} title="В папку">
               <svg
@@ -599,10 +592,9 @@
                 stroke="currentColor"
                 stroke-width="2"
                 fill="none"
-                ><path
-                  d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
-                ></path></svg
               >
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
             </button>
             <button class="icon-btn" on:click={downloadSelected} title="Скачать">
               <svg
@@ -612,14 +604,11 @@
                 stroke="currentColor"
                 stroke-width="2"
                 fill="none"
-                ><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                ></path><polyline points="7 10 12 15 17 10"></polyline><line
-                  x1="12"
-                  y1="15"
-                  x2="12"
-                  y2="3"
-                ></line></svg
               >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
             </button>
             <button class="icon-btn" on:click={deleteSelected} title="Удалить">
               <svg
@@ -629,59 +618,74 @@
                 stroke="currentColor"
                 stroke-width="2"
                 fill="none"
-                ><polyline points="3 6 5 6 21 6"></polyline><path
-                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                ></path></svg
               >
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
             </button>
           {/if}
         </div>
       </div>
     {:else}
-      <div class="normal-header">
-        <div class="row">
-          <div style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
+      <div class="header">
+        <div class="info">
+          <div class="titleWrapper titleWrapper--relative">
             {#if $forwardDraft && $forwardDraft.messages?.length > 0}
-              <button class="icon-btn" on:click={() => { clearForwardDraft(); clearSelection(); }} title="Отмена">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="22"
-                  height="22"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  fill="none"
-                  ><line x1="18" y1="6" x2="6" y2="18"></line><line
-                    x1="6"
-                    y1="6"
-                    x2="18"
-                    y2="18"
-                  ></line></svg
-                >
-              </button>
-              <h3 style="margin: 0;">Выбери получателя</h3>
+              <div class="forward-header">
+                <button class="icon-btn" on:click={() => { clearForwardDraft(); clearSelection(); }} title="Отмена">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="22"
+                    height="22"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    fill="none"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+                <h2 class="title">Выбери получателя</h2>
+              </div>
             {:else}
-              <h3 style="margin: 0;">Чаты</h3>
+              <h2 class="title">Чаты</h2>
             {/if}
           </div>
-          {#if !$forwardDraft || !$forwardDraft.messages?.length}
-            <div style="margin-right: 15px; display: flex; align-items: center; gap: 8px;">
-              <button
-                class="top-btn contacts-header-btn animated-panel"
-                on:click={() => (showContactsModal = true)}
-                title="Контакты"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-              </button>
-              <AddContactBtn />
-            </div>
-          {/if}
         </div>
-        <Search input={handleSearch} placeholder="Поиск" />
+
+        {#if !$forwardDraft || !$forwardDraft.messages?.length}
+          <div class="actions">
+            <button
+              class="button button--xsmall button--primary contacts-btn"
+              on:click={() => (showContactsModal = true)}
+              aria-label="Контакты"
+              title="Контакты"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </button>
+            <button class="new-chat-btn" aria-label="Начать общение">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        {/if}
+
+        <div class="stories">
+          <!-- Stories placeholder -->
+        </div>
+
+        <div class="addition">
+          <div class="search">
+            <Search input={handleSearch} placeholder="Найти" />
+          </div>
+        </div>
       </div>
     {/if}
   </div>
@@ -833,18 +837,123 @@
   }
 
   .header-container {
-    padding: 15px 0 0 0;
+    padding: 12px 0 0 0;
     position: relative;
     flex-shrink: 0;
-    min-height: 80px;
   }
 
-  .normal-header {
+  /* Official Max header structure */
+  .header {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .info {
+    display: flex;
+    align-items: center;
+  }
+
+  .titleWrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  .titleWrapper--relative {
+    position: relative;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary, #fff);
+  }
+
+  .forward-header {
+    display: flex;
+    align-items: center;
     gap: 10px;
   }
 
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    position: absolute;
+    top: 0;
+    right: 12px;
+  }
+
+  .info {
+    position: relative;
+  }
+
+  .stories {
+    /* Placeholder for stories section */
+  }
+
+  .addition {
+    display: flex;
+    align-items: center;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  /* Round primary button matching official */
+  .new-chat-btn {
+    background: var(--button-background-color, #007AFF);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    padding: 0;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+
+  .new-chat-btn:hover {
+    opacity: 0.85;
+  }
+
+  .contacts-btn {
+    background: rgba(118, 118, 128, 0.12);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    padding: 0;
+    transition: background-color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .contacts-btn:hover {
+    background: rgba(118, 118, 128, 0.24);
+  }
+
+  .button--xsmall {
+    /* Size handled by specific button classes */
+  }
+
+  .button--primary {
+    /* Color handled by specific button classes */
+  }
+
+  /* Selection mode header */
   .action-header {
     position: absolute;
     top: 0;
@@ -903,17 +1012,6 @@
     color: #9d70ff;
   }
 
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  h3 {
-    margin: 0;
-    color: #eee;
-  }
-
   .swipe-container {
     flex: 1;
     display: flex;
@@ -955,19 +1053,6 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-  }
-
-  .contacts-header-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 11px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background: #2b2d30;
-    border: none;
-    color: white;
   }
 
   .contacts-modal-backdrop {
@@ -1027,4 +1112,3 @@
     position: relative;
   }
 </style>
-

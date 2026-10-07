@@ -124,50 +124,58 @@
   }
 </script>
 
-<div
-  class="chat-item"
-  class:selected={isSelected}
-  on:mousedown={handleStart}
-  on:touchstart|passive={handleStart}
-  on:mouseup={handleEnd}
-  on:touchend={handleEnd}
-  on:touchmove|passive={handleMove}
-  on:click={handleClick}
-  on:contextmenu|preventDefault={() => dispatch("longpress", chat)}
->
+<div class="item">
   <div
-    class="avatar-click-area"
-    on:click|stopPropagation={() => {
-      if (selectionMode) {
-        handleClick();
-        return;
-      }
-      if (chat.id === 0) {
-        $Session.profile = { userId: $currentUser, chatId: 0 };
-      } else if (chat.type === "DIALOG") {
-        $Session.profile = { userId: peerId, chatId: chat.id };
-      } else {
-        $Session.profile = { chatId: chat.id };
-      }
-    }}
+    class="wrapper wrapper--withActions"
+    class:selected={isSelected}
+    on:mousedown={handleStart}
+    on:touchstart|passive={handleStart}
+    on:mouseup={handleEnd}
+    on:touchend={handleEnd}
+    on:touchmove|passive={handleMove}
+    on:contextmenu|preventDefault={() => dispatch("longpress", chat)}
   >
-    <Avatar
-      {chat}
-      contactId={peerId}
-      {selectionMode}
-      {isSelected}
-    />
-  </div>
+    <button class="cell" on:click={handleClick}>
+      <div
+        class="avatar"
+        on:click|stopPropagation={() => {
+          if (selectionMode) {
+            handleClick();
+            return;
+          }
+          if (chat.id === 0) {
+            $Session.profile = { userId: $currentUser, chatId: 0 };
+          } else if (chat.type === "DIALOG") {
+            $Session.profile = { userId: peerId, chatId: chat.id };
+          } else {
+            $Session.profile = { chatId: chat.id };
+          }
+        }}
+      >
+        <div class="avatarComposition">
+          <div class="avatarBadgeWrapper" style="--avatarSize: 64px;">
+            <Avatar
+              {chat}
+              contactId={peerId}
+              {selectionMode}
+              {isSelected}
+            />
+          </div>
+        </div>
+      </div>
 
-  <div class="content">
-    <div class="row top">
-      <span class="name">
-        {#if isBot}
-          <img src="icons/bot.svg" class="bot-badge-icon" alt="" />
-        {/if}
-        {title}
-      </span>
-      <div class="meta">
+      <h3 class="title">
+        <span class="name">
+          <span class="text">
+            {#if isBot}
+              <img src="icons/bot.svg" class="bot-badge-icon" alt="" />
+            {/if}
+            {title}
+          </span>
+        </span>
+      </h3>
+
+      <div class="indicators">
         {#if muted}
           <svg class="muted-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#8e8e93" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -180,137 +188,287 @@
             {isRead ? "✓✓" : "✓"}
           </span>
         {/if}
-        <span class="time">{timeDisplay}</span>
       </div>
-    </div>
 
-    <div class="row bottom">
-      <p class="preview">
+      <span class="text preview-text">
         {#if isMe}<span class="you-prefix">Вы:</span>{/if}
         {#if attaches}
-          <b>{attaches}</b>{#if shownMessage?.text},
-          {/if}
+          <b>{attaches}</b>{#if shownMessage?.text}, {/if}
         {/if}
         {#if replace}
           {@html replace.text}
         {:else}
           {(shownMessage?.text || getSystemText(shownMessage, false) || "").replace(/<[^>]*>/g, "")}
         {/if}
-      </p>
-      {#if unread > 0}
-        <div class="badge" class:muted style={unread >= 99 ? "width: 26px;" : ""}>
-          {unread > 99 ? "99+" : unread}
-        </div>
-      {/if}
+      </span>
+
+      <div class="meta">
+        <span class="time" aria-label={timeDisplay}>{timeDisplay}</span>
+      </div>
+
+      <div class="icons">
+        {#if unread > 0}
+          <div class="badge" class:muted style={unread >= 99 ? "width: 26px;" : ""}>
+            {unread > 99 ? "99+" : unread}
+          </div>
+        {/if}
+      </div>
+    </button>
+
+    <div class="actions">
+      <button class="menuButton" aria-label="Еще">
+        <svg width="16" height="16"><use href="#icon_dots_horizontal_mini"></use></svg>
+      </button>
     </div>
   </div>
 </div>
 
 <style>
-  .chat-item {
-    display: flex;
-    padding: 8px 10px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    gap: 12px;
-    user-select: none;
+  .item {
     position: relative;
   }
 
-  .chat-item:hover {
-    background-color: rgba(255, 255, 255, 0.03);
+  .wrapper {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    gap: 12px;
+    border-radius: 12px;
+    margin: 0 8px;
+    user-select: none;
   }
 
-  .chat-item.selected {
+  .wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .wrapper.selected {
     background-color: rgba(59, 130, 246, 0.15);
   }
 
-  /*.online-badge {
-        position: absolute; bottom: 2px; right: 2px;
-        width: 12px; height: 12px;
-        background-color: var(--status-success);
-        border: 2px solid #1e1e1e;
-        border-radius: 50%;
-        z-index: 1;
-    }*/
+  .wrapper--withActions .actions {
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
 
-  .content {
+  .wrapper--withActions:hover .actions {
+    opacity: 1;
+  }
+
+  .cell {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: auto auto;
+    gap: 2px 8px;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     min-width: 0;
-    gap: 4px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    font: inherit;
   }
 
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .avatar {
+    grid-row: 1 / 3;
+    grid-column: 1;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: opacity 0.15s ease;
   }
 
-  .name {
-    font-weight: 500;
+  .avatar:hover {
+    opacity: 0.88;
+  }
+
+  .avatarComposition {
+    width: 100%;
+    height: 100%;
+  }
+
+  .avatarBadgeWrapper {
+    width: var(--avatarSize, 64px);
+    height: var(--avatarSize, 64px);
+  }
+
+  .title {
+    grid-row: 1;
+    grid-column: 2;
+    margin: 0;
     font-size: 16px;
-    color: var(--text-primary);
+    font-weight: 500;
+    color: var(--text-primary, #fff);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .name .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .name .icon {
+    flex-shrink: 0;
+    display: flex;
+    color: #007AFF;
+  }
+
+  .name .icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .indicators {
+    grid-row: 1;
+    grid-column: 3;
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    align-items: center;
   }
 
   .meta {
+    grid-row: 1;
+    grid-column: 4;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .preview-text {
+    grid-row: 2;
+    grid-column: 2 / 5;
+    font-size: 14px;
+    color: #8E8E93;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+  }
+
+  .preview-text .emoji img {
+    width: 1.25em;
+    height: 1.25em;
+    object-fit: cover;
+    vertical-align: middle;
+  }
+
+  .preview-text .media img {
+    width: 1.25em;
+    height: 1.25em;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  .preview-text .shareIcon {
+    display: inline-flex;
+    color: #8E8E93;
+  }
+
+  .preview-text .shareIcon svg {
+    width: 16px;
+    height: 16px;
   }
 
   .time {
     font-size: 12px;
-    color: #888;
+    color: #8E8E93;
   }
 
-  .status-icon {
-    font-size: 12px;
-    color: #888;
+  .icons {
+    grid-row: 2;
+    grid-column: 4;
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-end;
   }
 
-  .status-icon.read {
-    color: var(--status-success);
+  .actions {
+    flex-shrink: 0;
+    display: flex;
   }
 
-  .preview {
-    margin: 0;
-    font-size: 14px;
-    color: #aaa;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
+  .menuButton {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #8E8E93;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+  }
+
+  .menuButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .badge {
+    background-color: var(--badge-unread, #007AFF);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+  }
+
+  .badge.muted {
+    background-color: #4B4B56;
+    color: #bbb;
   }
 
   .you-prefix {
     color: #fff;
   }
 
-  .badge {
-    background-color: var(--badge-unread);
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
-    width: 20px;
-    height: 20px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 8px;
-    flex-shrink: 0;
+  .status-icon {
+    font-size: 12px;
+    color: #8E8E93;
   }
 
-  .badge.muted {
-    background-color: #4b4b56;
-    color: #bbb;
+  .status-icon.read {
+    color: var(--status-success, #34C759);
+  }
+
+  .muted-icon {
+    opacity: 0.85;
+    display: inline-block;
+    vertical-align: -1px;
   }
 
   .bot-badge-icon {
@@ -320,23 +478,5 @@
     vertical-align: -2px;
     display: inline-block;
     opacity: 0.85;
-  }
-
-  .muted-icon {
-    opacity: 0.85;
-    margin-right: 2px;
-    display: inline-block;
-    vertical-align: -1px;
-  }
-
-  .avatar-click-area {
-    cursor: pointer;
-    flex-shrink: 0;
-    border-radius: 50%;
-    transition: opacity 0.15s ease;
-  }
-
-  .avatar-click-area:hover {
-    opacity: 0.88;
   }
 </style>
