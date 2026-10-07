@@ -341,17 +341,6 @@
     gap: 4px;
   }
 
-  .name .icon {
-    flex-shrink: 0;
-    display: flex;
-    color: #007AFF;
-  }
-
-  .name .icon svg {
-    width: 16px;
-    height: 16px;
-  }
-
   .indicators {
     display: inline-flex;
     gap: 4px;
@@ -384,30 +373,6 @@
     gap: 4px;
     margin: 0;
     line-height: 1.3;
-  }
-
-  .preview-text .emoji img {
-    width: 1.25em;
-    height: 1.25em;
-    object-fit: cover;
-    vertical-align: middle;
-  }
-
-  .preview-text .media img {
-    width: 1.25em;
-    height: 1.25em;
-    border-radius: 4px;
-    object-fit: cover;
-  }
-
-  .preview-text .shareIcon {
-    display: inline-flex;
-    color: #8E8E93;
-  }
-
-  .preview-text .shareIcon svg {
-    width: 16px;
-    height: 16px;
   }
 
   .time {
