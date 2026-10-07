@@ -1,14 +1,11 @@
 <script>
   import '../app.css';
 
-  import { onBackButtonPress } from "@tauri-apps/api/app";
-  import { listen } from "@tauri-apps/api/event";
-  import { invoke } from "@tauri-apps/api/core";
   import { onMount, onDestroy, setContext } from "svelte";
   import { browser } from '$app/environment';
   import { fade } from "svelte/transition";
   import { page } from "$app/stores";
-  import { type } from "@tauri-apps/plugin-os";
+  import { goto } from "$app/navigation";
 
   import API from '$lib/stores/api';
   import { add as addLog } from '$lib/stores/logs';
@@ -26,9 +23,39 @@
   import { videoCropState, closeVideoCropModal } from "$lib/stores/videoCrop.js";
 
   import Session, { closeAvatarGallery } from "$lib/stores/session";
-  import { initDeepLink } from "$lib/utils/deepLink.js";
-  import { initProxyConfig } from "$lib/utils/proxyConfig.js";
   import { handleBackButton, registerBackHandler } from "$lib/utils/backButton.js";
+
+  // Динамические импорты Tauri — позволяют запускать npm run dev без нативной обёртки
+  let isTauri = false;
+  let tauriListen = null;
+  let tauriInvoke = null;
+  let tauriType = null;
+  let tauriOnBackButtonPress = null;
+  let initDeepLink = null;
+  let initProxyConfig = null;
+
+  async function loadTauriDeps() {
+    try {
+      const [appMod, eventMod, coreMod, osMod, deepLinkMod, proxyMod] = await Promise.all([
+        import("@tauri-apps/api/app"),
+        import("@tauri-apps/api/event"),
+        import("@tauri-apps/api/core"),
+        import("@tauri-apps/plugin-os"),
+        import("$lib/utils/deepLink.js"),
+        import("$lib/utils/proxyConfig.js"),
+      ]);
+      tauriOnBackButtonPress = appMod.onBackButtonPress;
+      tauriListen = eventMod.listen;
+      tauriInvoke = coreMod.invoke;
+      tauriType = osMod.type;
+      initDeepLink = deepLinkMod.initDeepLink;
+      initProxyConfig = proxyMod.initProxyConfig;
+      isTauri = true;
+    } catch (e) {
+      console.info("Running without Tauri (browser-only mode)");
+      isTauri = false;
+    }
+  }
 
   let settings;
   const legacyUnregisterMap = new Map();
@@ -63,12 +90,16 @@
   onMount(async () => {
     unmountLoader();
 
-    await initProxyConfig();
-    cleanupDeepLink = await initDeepLink();
+    await loadTauriDeps();
 
-    listen("max", async (event) => {
-      addLog(event.payload);
-    });
+    if (isTauri && initProxyConfig) await initProxyConfig();
+    if (isTauri && initDeepLink) cleanupDeepLink = await initDeepLink();
+
+    if (isTauri && tauriListen) {
+      tauriListen("max", async (event) => {
+        addLog(event.payload);
+      });
+    }
 
     handleKeydown = (e) => {
       if (e.key === "Escape") {
@@ -77,13 +108,21 @@
     };
     window.addEventListener("keydown", handleKeydown);
 
-    const system = type();
+    // В browser-only режиме инжектим моки и сразу показываем UI
+    if (!isTauri) {
+      const { injectMockData } = await import("$lib/mock-chats.js");
+      await injectMockData();
+      if (page.url.pathname === "/") goto("/chats");
+      return;
+    }
 
-    if (system === "ios") {
+    const system = tauriType ? tauriType() : null;
+
+    if (system === "ios" && tauriInvoke) {
       try {
         const [{ inset: top }, { inset: bottom }] = await Promise.all([
-          invoke("plugin:safe-area-insets-css|get_top_inset"),
-          invoke("plugin:safe-area-insets-css|get_bottom_inset"),
+          tauriInvoke("plugin:safe-area-insets-css|get_top_inset"),
+          tauriInvoke("plugin:safe-area-insets-css|get_bottom_inset"),
         ]);
 
         document.documentElement.style.setProperty("--safe-area-top", `${top}px`);
@@ -94,9 +133,9 @@
       }
     }
 
-    if (system === "android" || system === "ios") {
+    if ((system === "android" || system === "ios") && tauriOnBackButtonPress) {
       try {
-        unlistenBackButton = await onBackButtonPress(handleBackButton);
+        unlistenBackButton = await tauriOnBackButtonPress(handleBackButton);
       } catch (e) {
         console.warn("BackButton listener unavailable", e);
       }
