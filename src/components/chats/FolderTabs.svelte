@@ -177,7 +177,7 @@
     display: flex;
     width: 100%;
     align-items: center;
-    background: #1e1e1e;
+    background: var(--bg-topbar);
     position: relative;
     z-index: 10;
     user-select: none;
@@ -243,8 +243,8 @@
     position: absolute;
     top: -4px;
     right: -4px;
-    background: #007afd;
-    border: 2px solid #1e1e1e;
+    background: var(--accent-primary);
+    border: 2px solid var(--bg-topbar);
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -266,25 +266,25 @@
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    color: #8E8E93;
+    color: var(--text-muted);
     white-space: nowrap;
     border-radius: 8px;
     transition: background 0.2s, color 0.2s;
   }
 
   .shaking .tab {
-    background: #2a2a2a;
-    color: #ddd;
-    border: 1px solid #444;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
     padding: 9px 15px;
   }
 
   .tab:hover {
-    color: #ccc;
+    color: var(--text-primary);
   }
 
   .tab--active {
-    color: #fff;
+    color: var(--text-primary);
   }
 
   .active-slide {
@@ -311,9 +311,9 @@
   }
 
   .add-tab-btn {
-    background: #282830;
-    border: 1px dashed #555;
-    color: #bbb;
+    background: var(--bg-surface);
+    border: 1px dashed var(--border-subtle);
+    color: var(--text-secondary);
     padding: 6px 14px;
     margin: 4px;
     border-radius: 8px;
@@ -328,8 +328,8 @@
   }
 
   .add-tab-btn:hover {
-    background: #363642;
-    color: #fff;
-    border-color: #777;
+    background: var(--bg-surface-2);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
   }
 </style>
