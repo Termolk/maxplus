@@ -50,7 +50,7 @@
   }
 
   .round-button--primary {
-    color: var(--button-icon-color, var(--icon-primary-inverse-static, #fff));
+    color: var(--button-icon-color, var(--button-primary-contrast, #fff));
   }
 
   .round-button:hover { opacity: 0.92; }

@@ -474,7 +474,7 @@
 
   .btn-primary {
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
   }
 
   .btn-primary:hover:not(:disabled) {

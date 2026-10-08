@@ -271,7 +271,7 @@
     border-radius: 50%;
     background: var(--accent-primary);
     border: none;
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     display: flex;
     align-items: center;
     justify-content: center;

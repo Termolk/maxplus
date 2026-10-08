@@ -2046,7 +2046,7 @@
   }
 
   .send-button:hover {
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     background: var(--accent-primary);
   }
 

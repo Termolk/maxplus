@@ -235,7 +235,7 @@
 
   .tabs button.active {
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     border-color: var(--accent-primary);
   }
 

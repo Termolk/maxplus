@@ -322,7 +322,7 @@
     cursor: pointer;
     border: none;
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     flex-shrink: 0;
     transition: background-color 0.15s, opacity 0.15s;
   }

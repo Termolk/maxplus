@@ -301,7 +301,7 @@
     border-radius: 50%;
     border: 2px solid #26262e;
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -411,7 +411,7 @@
     font-weight: 600;
     cursor: pointer;
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     transition:
       transform 0.12s,
       opacity 0.15s,

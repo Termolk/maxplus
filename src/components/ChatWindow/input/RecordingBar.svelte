@@ -187,7 +187,7 @@
 
   .rec-lock-slide.reached {
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
   }
 
   .rec-trash-btn {
@@ -247,13 +247,13 @@
   }
 
   .send-button:hover {
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     background: var(--accent-primary);
   }
 
   .recording-pulse-btn {
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     animation: rec-btn-pulse 1.5s infinite;
     flex-shrink: 0;
   }

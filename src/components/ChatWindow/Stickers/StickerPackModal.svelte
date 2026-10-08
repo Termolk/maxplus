@@ -326,7 +326,7 @@
     flex: 1;
     height: 44px;
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: var(--button-primary-contrast);
     border: none;
     border-radius: 12px;
     font-size: 15px;
