@@ -44,7 +44,7 @@
 
   .search-block {
     background-color: rgba(118, 118, 128, 0.12);
-    color: #8E8E93;
+    color: var(--text-muted);
     width: 100%;
     height: 36px;
     border-radius: 10px;
@@ -65,7 +65,7 @@
 
   .search-icon {
     flex-shrink: 0;
-    color: #8E8E93;
+    color: var(--text-muted);
     margin-right: 8px;
   }
 
@@ -73,7 +73,7 @@
     position: absolute;
     left: 34px;
     pointer-events: none;
-    color: #8E8E93;
+    color: var(--text-muted);
     font-size: 15px;
     opacity: 1;
     transition: opacity 0.1s;
@@ -90,11 +90,11 @@
     background: none;
     font-size: 15px;
     display: flex;
-    color: var(--text-primary, #fff);
+    color: var(--text-primary);
     padding: 0;
   }
 
   .field::placeholder {
-    color: #8E8E93;
+    color: var(--text-muted);
   }
 </style>

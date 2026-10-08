@@ -1,5 +1,6 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { IconButton } from "$components/ui";
+  import { createEventDispatcher, onMount, onDestroy, tick } from "svelte";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
 
@@ -14,28 +15,37 @@
   let lastReorderTime = 0;
   const REORDER_COOLDOWN = 250;
 
-  let tabsContainer;
   let tabElements = [];
 
   $: activeIndex = folders.findIndex(f => f === activeFolder);
   $: if (activeIndex === -1) activeIndex = 0;
 
-  let activeTabWidth = 0;
-  let activeTabLeft = 0;
+  let tabsEl;
+  let slideLeft = 0;
+  let slideWidth = 0;
+  let slideTransition = false;
+  let resizeObserver;
 
-  function updateSlideIndicator() {
-    if (!tabsContainer || !tabElements[activeIndex]) return;
-    const containerRect = tabsContainer.getBoundingClientRect();
-    const tabRect = tabElements[activeIndex].getBoundingClientRect();
-    activeTabWidth = tabRect.width;
-    activeTabLeft = tabRect.left - containerRect.left;
+  async function updateSlide() {
+    await tick();
+    const el = tabElements[activeIndex];
+    if (!el) return;
+    slideLeft = el.offsetLeft;
+    slideWidth = el.offsetWidth;
+    if (!slideTransition) requestAnimationFrame(() => (slideTransition = true));
   }
 
-  // Update indicator when active folder changes or folders reorder
-  $: if (activeIndex >= 0 && folders.length > 0) {
-    // Defer to after DOM update
-    requestAnimationFrame(updateSlideIndicator);
-  }
+  $: activeIndex, folders, isEditing, updateSlide();
+
+  onMount(() => {
+    if (typeof ResizeObserver !== "undefined" && tabsEl) {
+      resizeObserver = new ResizeObserver(() => updateSlide());
+      resizeObserver.observe(tabsEl);
+    }
+    document.fonts?.ready?.then(updateSlide);
+  });
+
+  onDestroy(() => resizeObserver?.disconnect());
 
   function selectFolder(folder) {
     if (isEditing) return;
@@ -104,10 +114,11 @@
 
 <div class="tabs-container">
   <div
-    class="tabs tabs--transition"
+    class="tabs"
+    class:tabs--transition={slideTransition}
     role="tablist"
-    bind:this={tabsContainer}
-    style="--active-tab-width: {activeTabWidth}px; --active-tab-left: {activeTabLeft}px;"
+    bind:this={tabsEl}
+    style="--active-tab-width: {slideWidth}px; --active-tab-left: {slideLeft}px;"
   >
     {#each folders as folder, index (folder.id)}
       <div
@@ -123,7 +134,10 @@
         <button
           class="tab"
           class:tab--active={activeFolder === folder && !isEditing}
+          type="button"
           role="tab"
+          aria-selected={activeFolder === folder}
+          tabindex={activeFolder === folder ? 0 : -1}
           on:click={() => selectFolder(folder)}
         >
           {folder.title}
@@ -154,22 +168,16 @@
       </div>
     {/each}
 
-    {#if isEditing}
-      <button
-        class="add-tab-btn"
-        title="Добавить папку"
-        on:click|stopPropagation={() => dispatch("addFolder")}
-      >
-        +
-      </button>
+    {#if !isEditing && slideWidth > 0}
+      <div class="active-slide" aria-hidden="true"></div>
     {/if}
 
-    <div class="active-slide" aria-hidden="true"></div>
+    {#if isEditing}
+      <IconButton class="foldertabs-add-tab-btn" title="Добавить папку" onclick={(e) => { e.stopPropagation(); (() => dispatch("addFolder"))(e); }}>
+        +
+      </IconButton>
+    {/if}
   </div>
-
-  <button class="edit-btn" class:active={isEditing} on:click={toggleEditMode}>
-    {isEditing ? "Готово" : "Изм."}
-  </button>
 </div>
 
 <style>
@@ -190,8 +198,7 @@
     overflow-y: hidden;
     flex: 1 1 auto;
     min-width: 0;
-    padding-left: 5px;
-    padding-right: 8px;
+    padding: 0 var(--size-4, 4px);
     scrollbar-width: none;
     -ms-overflow-style: none;
     position: relative;
@@ -201,17 +208,32 @@
     display: none;
   }
 
+  /* === Active indicator — ported from Max === */
+  .active-slide {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    height: var(--size-2, 2px);
+    width: calc(var(--active-tab-width) - var(--size-12, 12px) * 2);
+    border-top-left-radius: var(--border-radius-common-xs, 4px);
+    border-top-right-radius: var(--border-radius-common-xs, 4px);
+    background: var(--icon-themed, var(--accent-primary));
+    transform: translateX(calc(var(--active-tab-left) + var(--size-12, 12px)));
+    pointer-events: none;
+  }
+
   .tabs--transition .active-slide {
-    transition: left 0.25s ease, width 0.25s ease;
+    transition: transform 0.25s ease-out, width 0.25s ease-out;
   }
 
   .tab-item {
     position: relative;
     display: flex;
     align-items: center;
-    margin-right: 4px;
+    margin: 0;
     touch-action: pan-x;
-    padding: 2px 0;
+    padding: 0;
     flex-shrink: 0;
   }
 
@@ -260,76 +282,47 @@
 
   .tab {
     position: relative;
-    padding: 10px 16px;
-    background: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--size-4, 4px);
+    flex-shrink: 0;
+    min-width: var(--size-40, 40px);
+    min-height: var(--size-40, 40px);
+    margin: 0;
+    padding: 0 var(--size-12, 12px);
     border: none;
-    font-size: 15px;
-    font-weight: 500;
+    border-radius: var(--border-radius-common-m, 12px);
+    background: none;
     cursor: pointer;
-    color: var(--text-muted);
     white-space: nowrap;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
+    font: var(--font-body-strong-weight, 500) var(--font-body-strong-size, 16px) / var(--font-body-strong-line-height, 20px) var(--font, -apple-system, BlinkMacSystemFont, "Roboto", system-ui, sans-serif);
+    letter-spacing: var(--font-body-strong-letter-spacing, 0.15px);
+    color: var(--text-tertiary, #06070885);
+    transition: color 0.2s, background-color 0.15s;
   }
 
   .shaking .tab {
     background: var(--bg-surface);
     color: var(--text-primary);
     border: 1px solid var(--border-subtle);
-    padding: 9px 15px;
+    padding: 5px 11px;
   }
 
-  .tab:hover {
-    color: var(--text-primary);
+  @media (hover: hover) {
+    .tab:hover {
+      background-color: var(--states-button-ghost-hover, #0d0d0d0a);
+    }
+  }
+
+  .tab:active {
+    background-color: var(--states-button-ghost-pressed, #0d0d0d14);
   }
 
   .tab--active {
-    color: var(--text-primary);
+    color: var(--text-themed, var(--accent-primary));
   }
 
-  .active-slide {
-    position: absolute;
-    bottom: 0;
-    left: var(--active-tab-left, 0px);
-    width: var(--active-tab-width, 0px);
-    height: 3px;
-    background: #007AFF;
-    border-radius: 3px 3px 0 0;
-    pointer-events: none;
-  }
+  :global(.foldertabs-add-tab-btn)  { margin: 4px; flex-shrink: 0; }
 
-  .edit-btn {
-    padding: 0 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #007afd;
-    font-weight: bold;
-    font-size: 14px;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
-  .add-tab-btn {
-    background: var(--bg-surface);
-    border: 1px dashed var(--border-subtle);
-    color: var(--text-secondary);
-    padding: 6px 14px;
-    margin: 4px;
-    border-radius: 8px;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
-  }
-
-  .add-tab-btn:hover {
-    background: var(--bg-surface-2);
-    color: var(--text-primary);
-    border-color: var(--text-muted);
-  }
 </style>

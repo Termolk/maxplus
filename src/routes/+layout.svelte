@@ -22,6 +22,7 @@
   import VideoCropModal from "$components/media/VideoCropModal.svelte";
   import TraceOverlay from "$components/main/dev/TraceOverlay.svelte";
   import { videoCropState, closeVideoCropModal } from "$lib/stores/videoCrop.js";
+  import { theme } from "$lib/stores/theme.js";
 
   import Session, { closeAvatarGallery } from "$lib/stores/session";
   import { handleBackButton, registerBackHandler } from "$lib/utils/backButton.js";
@@ -107,7 +108,8 @@
       await injectMockData();
       const { page: pageStore } = await import("$app/stores");
       const currentPage = get(pageStore);
-      if (currentPage.url.pathname === "/") goto("/chats");
+      // Таббар (Panel) и карточки рендерятся только на "/", поэтому не уводим на /chats
+      if (currentPage.url.pathname === "/chats") goto("/", { replaceState: true });
     }
 
     handleKeydown = (e) => {
@@ -140,6 +142,11 @@
   });
 
   if (browser) window.alert = showAlert;
+
+  $: if (browser && $theme) {
+    document.documentElement.setAttribute('data-theme', $theme === 'dark' ? 'dark' : '');
+    if ($theme !== 'dark') document.documentElement.removeAttribute('data-theme');
+  }
 
   $: if (browser && $Session?.loaded) {
     const el = document.getElementById("initial-loader");

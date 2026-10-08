@@ -1,4 +1,5 @@
 <script>
+  import { Toggle } from "$components/ui";
 import { goto } from "$app/navigation";
   import {
     onMount,
@@ -333,9 +334,7 @@ import { goto } from "$app/navigation";
             <img src={"icons/" + btn.icon} class="icon" />
             <a>{btn.text}</a>
             {#if btn.isToggle}
-              <div class="toggle-track" class:active={btn.toggleValue}>
-                <div class="toggle-thumb" class:active={btn.toggleValue}></div>
-              </div>
+              <Toggle readonly checked={btn.toggleValue} />
             {:else}
               <svg
                 width="40"
@@ -362,7 +361,7 @@ import { goto } from "$app/navigation";
   .settings {
     position: relative;
     width: 100vw;
-    color: #bbb;
+    color: var(--text-muted);
     overflow-y: auto;
     flex-grow: 1;
     min-height: 0;
@@ -390,7 +389,7 @@ import { goto } from "$app/navigation";
     margin-top: 15px;
     font-size: 20px;
     font-weight: 800;
-    color: #bbb;
+    color: var(--text-muted);
   }
 
   .info .phone {
@@ -407,7 +406,7 @@ import { goto } from "$app/navigation";
   }
 
   .buttons .group {
-    background-color: #26262e;
+    background-color: var(--bg-surface-2);
     border-radius: 15px;
   }
 
@@ -449,33 +448,7 @@ import { goto } from "$app/navigation";
     opacity: 1;
   }
 
-  .toggle-track {
-    margin-left: auto;
-    width: 44px;
-    height: 24px;
-    background: #3a3a3c;
-    border-radius: 12px;
-    position: relative;
-    transition: background-color 0.2s ease;
-    flex-shrink: 0;
-  }
 
-  .toggle-track.active {
-    background: #248bfe;
-  }
 
-  .toggle-thumb {
-    width: 20px;
-    height: 20px;
-    background: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
 
-  .toggle-thumb.active {
-    transform: translateX(20px);
-  }
 </style>

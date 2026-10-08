@@ -226,7 +226,7 @@
   .quote-container {
     margin: 3px 0;
     padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--bg-surface);
     border-radius: 8px;
     display: flex;
     gap: 8px;

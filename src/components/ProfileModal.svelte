@@ -1,4 +1,5 @@
 <script>
+  import { Button, IconButton, Tab } from "$components/ui";
   import { fly, fade, scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import {
@@ -998,12 +999,12 @@
     transition:fly={{ x: 380, duration: 280, opacity: 1, easing: cubicOut }}
   >
     <div class="tg-topbar">
-      <button class="tg-icon-btn" on:click={goBack} aria-label="Назад">
+      <IconButton class="profilemodal-tg-icon-btn" onclick={goBack} aria-label="Назад">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-      </button>
+      </IconButton>
 
       <div class="tg-topbar-title">
         {#if activeTab === "settings"}
@@ -1021,13 +1022,13 @@
 
       <div class="tg-menu-container">
         {#if chat}
-          <button class="tg-icon-btn" on:click|stopPropagation={toggleMenu} aria-label="Меню">
+          <IconButton class="profilemodal-tg-icon-btn" onclick={(e) => { e.stopPropagation(); (toggleMenu)(e); }} aria-label="Меню">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="1.5"></circle>
               <circle cx="12" cy="5" r="1.5"></circle>
               <circle cx="12" cy="19" r="1.5"></circle>
             </svg>
-          </button>
+          </IconButton>
         {/if}
 
         {#if showMenu}
@@ -1140,14 +1141,9 @@
     {#if chat}
       <div class="tg-tabs">
         {#each availableTabs as tabId}
-          <button
-            type="button"
-            class="tg-tab"
-            class:active={activeTab === tabId}
-            on:click={() => selectTab(tabId)}
-          >
+          <Tab variant="underline" active={activeTab === tabId} class="profilemodal-tg-tab" onclick={() => selectTab(tabId)}>
             <span>{tabLabels[tabId] || tabId}</span>
-          </button>
+          </Tab>
         {/each}
         <div
           class="tg-tab-indicator"
@@ -1208,17 +1204,17 @@
           </div>
 
           <div class="tg-actions-row">
-            <button type="button" class="tg-action-btn" on:click={openChat}>
+            <Button class="profilemodal-tg-action-btn" onclick={openChat}>
               <div class="tg-action-circle">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
               </div>
               <span class="tg-action-label">Чат</span>
-            </button>
+            </Button>
 
             {#if hasSettings}
-              <button type="button" class="tg-action-btn" on:click={toggleMute}>
+              <Button class="profilemodal-tg-action-btn" onclick={toggleMute}>
                 <div class="tg-action-circle">
                   {#if muted}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1236,11 +1232,11 @@
                   {/if}
                 </div>
                 <span class="tg-action-label">{muted ? "Звук вкл." : "Без звука"}</span>
-              </button>
+              </Button>
             {/if}
 
             {#if chatLink}
-              <button type="button" class="tg-action-btn" on:click={copyLink}>
+              <Button class="profilemodal-tg-action-btn" onclick={copyLink}>
                 <div class="tg-action-circle">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -1248,7 +1244,7 @@
                   </svg>
                 </div>
                 <span class="tg-action-label">Ссылка</span>
-              </button>
+              </Button>
             {/if}
           </div>
         </div>
@@ -1274,19 +1270,19 @@
                   </div>
                   <div class="tg-row-subtitle">Имя пользователя / Ссылка</div>
                 </div>
-                <button type="button" class="tg-copy-btn" title="Скопировать ссылку" on:click|stopPropagation={copyLink}>
+                <IconButton class="profilemodal-tg-copy-btn" title="Скопировать ссылку" onclick={(e) => { e.stopPropagation(); (copyLink)(e); }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                   </svg>
-                </button>
+                </IconButton>
                 {#if chat?.type === "CHAT" && (isGroupAdmin || chat?.owner === $currentUser)}
-                  <button type="button" class="tg-copy-btn" title="Отозвать и создать новую ссылку" on:click|stopPropagation={() => (showRefreshInviteConfirm = true)}>
+                  <IconButton class="profilemodal-tg-copy-btn" title="Отозвать и создать новую ссылку" onclick={(e) => { e.stopPropagation(); (() => (showRefreshInviteConfirm = true))(e); }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="23 4 23 10 17 10"/>
                       <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                     </svg>
-                  </button>
+                  </IconButton>
                 {/if}
               </div>
             {/if}
@@ -1317,12 +1313,12 @@
                   <div class="tg-row-title selectable">{field.value}</div>
                   <div class="tg-row-subtitle">{field.label}</div>
                 </div>
-                <button type="button" class="tg-copy-btn" title="Скопировать">
+                <IconButton class="profilemodal-tg-copy-btn" title="Скопировать">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                   </svg>
-                </button>
+                </IconButton>
               </div>
             {/each}
 
@@ -1340,12 +1336,12 @@
                   <div class="tg-row-title">{formatId(userId || chatId)}</div>
                   <div class="tg-row-subtitle">Идентификатор (ID)</div>
                 </div>
-                <button type="button" class="tg-copy-btn" title="Скопировать ID">
+                <IconButton class="profilemodal-tg-copy-btn" title="Скопировать ID">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                   </svg>
-                </button>
+                </IconButton>
               </div>
             {/if}
           </div>
@@ -1437,18 +1433,13 @@
 
                 {#if canManage}
                   <div class="tg-member-more-container" on:click|stopPropagation>
-                    <button
-                      type="button"
-                      class="tg-btn-member-more"
-                      on:click={() => toggleMemberMenu(memberId)}
-                      aria-label="Опции участника"
-                    >
+                    <IconButton class="profilemodal-tg-btn-member-more" onclick={() => toggleMemberMenu(memberId)} aria-label="Опции участника">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="1.5"/>
                         <circle cx="12" cy="5" r="1.5"/>
                         <circle cx="12" cy="19" r="1.5"/>
                       </svg>
-                    </button>
+                    </IconButton>
 
                     {#if selectedMemberMenuId === memberId}
                       <div class="tg-dropdown tg-member-dropdown" class:bottom-up={memberIdx >= displayedMembers.length - 2 && displayedMembers.length > 2} transition:scale={{ duration: 120, start: 0.94 }}>
@@ -1495,14 +1486,9 @@
             {/each}
 
             {#if !groupMembersEnd && !memberSearch.trim()}
-              <button
-                type="button"
-                class="tg-load-more-members"
-                disabled={groupMembersLoading}
-                on:click={loadMoreMembers}
-              >
+              <Button variant="ghost" class="profilemodal-tg-load-more-members" disabled={groupMembersLoading} onclick={loadMoreMembers}>
                 {groupMembersLoading ? "Загрузка..." : "Показать еще"}
-              </button>
+              </Button>
             {/if}
           </div>
         {/if}
@@ -1614,14 +1600,9 @@
                   {/if}
                 </div>
               </div>
-              <button
-                type="button"
-                class="tg-btn-action"
-                class:danger={$chatSettings?.keys?.current || $chatSettings?.session}
-                on:click={triggerSwitchEnc}
-              >
+              <Button danger={$chatSettings?.keys?.current || $chatSettings?.session} class="profilemodal-tg-btn-action" onclick={triggerSwitchEnc}>
                 { !($chatSettings?.keys?.current || $chatSettings?.session) ? "Новая сессия" : "Отключить" }
-              </button>
+              </Button>
             </div>
 
             {#if $chatSettings?.session?.fingerprint}
@@ -1638,12 +1619,12 @@
                     {$chatSettings.session.fingerprint}
                   </div>
                 </div>
-                <button type="button" class="tg-copy-btn" title="Скопировать ключ">
+                <IconButton class="profilemodal-tg-copy-btn" title="Скопировать ключ">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                   </svg>
-                </button>
+                </IconButton>
               </div>
             {/if}
           </div>
@@ -1676,12 +1657,7 @@
                 placeholder="Введите общий секрет чата"
               />
             </div>
-            <button
-              type="button"
-              class="tg-eye-btn"
-              on:click={() => (showPassword = !showPassword)}
-              aria-label="Показать пароль"
-            >
+            <IconButton class="profilemodal-tg-eye-btn" onclick={() => (showPassword = !showPassword)} aria-label="Показать пароль">
               {#if showPassword}
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
@@ -1693,42 +1669,27 @@
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
               {/if}
-            </button>
+            </IconButton>
           </div>
         </div>
         <div class="tg-caption">Дополнительный общий пароль для симметричного шифрования.</div>
 
         <div class="tg-section-header">Обфускация трафика</div>
         <div class="tg-segmented">
-          <button
-            type="button"
-            class="tg-seg-btn"
-            class:active={!$chatSettings?.obfuscation}
-            on:click={() => setObfuscation(null)}
-          >
+          <Tab variant="segment" active={!$chatSettings?.obfuscation} class="profilemodal-tg-seg-btn" onclick={() => setObfuscation(null)}>
             <span class="tg-seg-title">Без маскировки</span>
             <span class="tg-seg-sub">OFF</span>
-          </button>
+          </Tab>
 
-          <button
-            type="button"
-            class="tg-seg-btn"
-            class:active={$chatSettings?.obfuscation === "zh"}
-            on:click={() => setObfuscation("zh")}
-          >
+          <Tab variant="segment" active={$chatSettings?.obfuscation === "zh"} class="profilemodal-tg-seg-btn" onclick={() => setObfuscation("zh")}>
             <span class="tg-seg-title">Китайский</span>
             <span class="tg-seg-sub">Zh</span>
-          </button>
+          </Tab>
 
-          <button
-            type="button"
-            class="tg-seg-btn"
-            class:active={$chatSettings?.obfuscation === "words"}
-            on:click={() => setObfuscation("words")}
-          >
+          <Tab variant="segment" active={$chatSettings?.obfuscation === "words"} class="profilemodal-tg-seg-btn" onclick={() => setObfuscation("words")}>
             <span class="tg-seg-title">Книжные слова</span>
             <span class="tg-seg-sub">Tol</span>
-          </button>
+          </Tab>
         </div>
 
         <div class="tg-caption">
@@ -2015,8 +1976,8 @@
     width: 100%;
     max-width: 420px;
     height: 100%;
-    background: #212121;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-surface-2);
+    border-left: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
     box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
@@ -2028,53 +1989,31 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    background: #212121;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-surface-2);
+    border-bottom: 1px solid var(--border-subtle);
     flex-shrink: 0;
     z-index: 10;
   }
 
   .tg-tabs {
     display: flex;
-    background: #212121;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-surface-2);
+    border-bottom: 1px solid var(--border-subtle);
     flex-shrink: 0;
     position: relative;
     user-select: none;
   }
 
-  .tg-tab {
-    flex: 1;
-    height: 44px;
-    background: transparent;
-    border: none;
-    color: #707579;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-  }
+  :global(.profilemodal-tg-tab)  { flex: 1; position: relative; z-index: 1; }
 
-  .tg-tab:hover {
-    color: #ffffff;
-  }
 
-  .tg-tab.active {
-    color: #3390ec;
-    font-weight: 600;
-  }
 
   .tg-tab-indicator {
     position: absolute;
     bottom: 0;
     left: 0;
     height: 2px;
-    background: #3390ec;
+    background: var(--accent-primary);
     border-radius: 2px 2px 0 0;
     pointer-events: none;
     will-change: transform;
@@ -2086,7 +2025,7 @@
   }
 
   .tg-topbar-title {
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.2px;
@@ -2097,28 +2036,10 @@
     text-overflow: ellipsis;
   }
 
-  .tg-icon-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 50%;
-    background: transparent;
-    color: #aaaaaa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s, transform 0.12s;
-  }
+  :global(.profilemodal-tg-icon-btn)  { width: 36px; }
 
-  .tg-icon-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-  }
 
-  .tg-icon-btn:active {
-    transform: scale(0.92);
-  }
+  :global(.profilemodal-tg-icon-btn):active  { transform: scale(0.92); }
 
   .tg-menu-container {
     position: relative;
@@ -2128,16 +2049,16 @@
     position: absolute;
     top: 42px;
     right: 0;
-    background: #2b2b2b;
+    background: var(--bg-surface);
     width: 210px;
     border-radius: 12px;
     padding: 6px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     gap: 2px;
     z-index: 30;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-subtle);
   }
 
   .tg-menu-item {
@@ -2145,7 +2066,7 @@
     align-items: center;
     gap: 12px;
     padding: 9px 12px;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -2154,11 +2075,11 @@
   }
 
   .tg-menu-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--bg-surface);
   }
 
   .tg-menu-item.danger {
-    color: #ff595a;
+    color: var(--status-danger);
   }
 
   .tg-menu-item.danger:hover {
@@ -2167,7 +2088,7 @@
 
   .tg-menu-divider {
     height: 1px;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--bg-surface);
     margin: 4px 6px;
   }
 
@@ -2222,7 +2143,7 @@
     align-items: center;
     text-align: center;
     padding: 10px 0 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-subtle);
     flex-shrink: 0;
   }
 
@@ -2247,9 +2168,9 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 2px solid #212121;
-    background: #3390ec;
-    color: #ffffff;
+    border: 2px solid var(--border-subtle);
+    background: var(--accent-primary);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2273,7 +2194,7 @@
 
   .tg-hero-name {
     margin: 0;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 22px;
     font-weight: 600;
     letter-spacing: -0.3px;
@@ -2282,12 +2203,12 @@
 
   .tg-hero-status {
     margin-top: 4px;
-    color: #707579;
+    color: var(--text-muted);
     font-size: 14px;
   }
 
   .tg-hero-status.online {
-    color: #2ecc71;
+    color: var(--status-success);
   }
 
   .tg-actions-row {
@@ -2302,51 +2223,32 @@
     flex-wrap: wrap;
   }
 
-  .tg-action-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    transition: transform 0.12s, opacity 0.15s;
-    min-width: 56px;
-    max-width: 80px;
-    text-align: center;
-    flex-shrink: 0;
-  }
+  :global(.profilemodal-tg-action-btn)  { min-width: 56px; max-width: 80px; flex-shrink: 0; }
 
-  .tg-action-btn:active {
-    transform: scale(0.92);
-  }
+  :global(.profilemodal-tg-action-btn):active  { transform: scale(0.92); }
 
   .tg-action-circle {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: #2b2b2b;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    color: #3390ec;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--accent-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.15s, color 0.15s;
   }
 
-  .tg-action-btn:hover .tg-action-circle {
-    background: #3390ec;
-    color: #ffffff;
-  }
 
   .tg-action-label {
-    color: #aaaaaa;
+    color: var(--text-muted);
     font-size: 12px;
     font-weight: 500;
   }
 
   .tg-section-header {
-    color: #707579;
+    color: var(--text-subtle);
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
@@ -2356,9 +2258,9 @@
   }
 
   .tg-card {
-    background: #2b2b2b;
+    background: var(--bg-surface);
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -2371,7 +2273,7 @@
     gap: 12px;
     padding: 12px 14px;
     min-height: 52px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-subtle);
     box-sizing: border-box;
     flex-shrink: 0;
   }
@@ -2386,7 +2288,7 @@
   }
 
   .tg-row-clickable:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-surface);
   }
 
   .tg-row-icon {
@@ -2401,17 +2303,17 @@
 
   .tg-icon-link {
     background: rgba(51, 144, 236, 0.15);
-    color: #3390ec;
+    color: var(--accent-primary);
   }
 
   .tg-icon-info {
     background: rgba(135, 116, 225, 0.15);
-    color: #8774e1;
+    color: var(--accent-violet);
   }
 
   .tg-icon-hash {
-    background: rgba(255, 255, 255, 0.08);
-    color: #aaaaaa;
+    background: var(--bg-surface);
+    color: var(--text-muted);
   }
 
   .tg-icon-bell {
@@ -2421,7 +2323,7 @@
 
   .tg-icon-shield {
     background: rgba(51, 144, 236, 0.15);
-    color: #3390ec;
+    color: var(--accent-primary);
   }
 
   .tg-icon-key {
@@ -2436,22 +2338,22 @@
 
   .tg-icon-check {
     background: rgba(46, 201, 113, 0.15);
-    color: #2ecc71;
+    color: var(--status-success);
   }
 
   .tg-icon-invite {
     background: rgba(51, 144, 236, 0.15);
-    color: #3390ec;
+    color: var(--accent-primary);
   }
 
   .tg-icon-phone {
     background: rgba(46, 201, 113, 0.15);
-    color: #2ecc71;
+    color: var(--status-success);
   }
 
   .tg-icon-danger {
     background: rgba(229, 57, 53, 0.15);
-    color: #ff595a;
+    color: var(--status-danger);
   }
 
   .tg-row-main {
@@ -2463,7 +2365,7 @@
   }
 
   .tg-row-title {
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 15px;
     font-weight: 500;
     line-height: 1.35;
@@ -2471,7 +2373,7 @@
   }
 
   .tg-row-title.danger {
-    color: #ff595a;
+    color: var(--status-danger);
   }
 
   .tg-row-title.selectable {
@@ -2481,14 +2383,14 @@
   }
 
   .tg-row-subtitle {
-    color: #707579;
+    color: var(--text-muted);
     font-size: 13px;
     line-height: 1.3;
     word-break: break-word;
   }
 
   .tg-link-text {
-    color: #3390ec;
+    color: var(--accent-primary);
     word-break: break-all;
   }
 
@@ -2498,23 +2400,7 @@
     text-overflow: ellipsis;
   }
 
-  .tg-copy-btn {
-    border: none;
-    background: transparent;
-    color: #707579;
-    padding: 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.15s, background 0.15s;
-  }
 
-  .tg-copy-btn:hover {
-    color: #3390ec;
-    background: rgba(51, 144, 236, 0.1);
-  }
 
   .tg-badge {
     display: inline-flex;
@@ -2527,7 +2413,7 @@
 
   .tg-badge-success {
     background: rgba(46, 201, 113, 0.18);
-    color: #2ecc71;
+    color: var(--status-success);
   }
 
   .tg-badge-warning {
@@ -2536,40 +2422,16 @@
   }
 
   .tg-badge-muted {
-    background: rgba(255, 255, 255, 0.08);
-    color: #aaaaaa;
+    background: var(--bg-surface);
+    color: var(--text-muted);
   }
 
-  .tg-btn-action {
-    border: none;
-    border-radius: 8px;
-    padding: 7px 12px;
-    background: #3390ec;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.12s;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
+  :global(.profilemodal-tg-btn-action)  { flex-shrink: 0; }
 
-  .tg-btn-action:hover {
-    background: #4ea4f6;
-  }
 
-  .tg-btn-action:active {
-    transform: scale(0.96);
-  }
+  :global(.profilemodal-tg-btn-action):active  { transform: scale(0.96); }
 
-  .tg-btn-action.danger {
-    background: rgba(229, 57, 53, 0.18);
-    color: #ff595a;
-  }
 
-  .tg-btn-action.danger:hover {
-    background: rgba(229, 57, 53, 0.28);
-  }
 
   .tg-switch {
     width: 44px;
@@ -2582,7 +2444,7 @@
   }
 
   .tg-switch.active {
-    background: #3390ec;
+    background: var(--accent-primary);
   }
 
   .tg-switch-thumb {
@@ -2611,25 +2473,25 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #2b2b2b;
+    background: var(--bg-surface);
     border-radius: 10px;
     padding: 8px 12px;
     margin-bottom: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: #707579;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
   }
 
   .tg-search-input {
     flex: 1;
     background: transparent;
     border: none;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 14px;
     outline: none;
   }
 
   .tg-search-input::placeholder {
-    color: #707579;
+    color: var(--text-muted);
   }
 
   .tg-member-row {
@@ -2647,7 +2509,7 @@
 
   .tg-role-badge {
     font-size: 11px;
-    color: #3390ec;
+    color: var(--accent-primary);
     background: rgba(51, 144, 236, 0.12);
     padding: 1px 6px;
     border-radius: 4px;
@@ -2655,12 +2517,12 @@
   }
 
   .tg-role-badge.admin {
-    color: #8774e1;
+    color: var(--accent-violet);
     background: rgba(135, 116, 225, 0.12);
   }
 
   .tg-chevron {
-    color: #707579;
+    color: var(--text-muted);
     flex-shrink: 0;
   }
 
@@ -2674,8 +2536,8 @@
     left: 50%;
     transform: translateX(-50%);
     background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    border: 1px solid var(--border-subtle);
+    color: #fff;
     font-size: 13px;
     font-weight: 500;
     padding: 8px 16px;
@@ -2689,7 +2551,7 @@
   }
 
   .tg-toast svg {
-    color: #2ecc71;
+    color: var(--status-success);
   }
 
   .tg-icon-lock {
@@ -2698,13 +2560,13 @@
   }
 
   .tg-icon-save {
-    background: rgba(255, 255, 255, 0.08);
-    color: #aaaaaa;
+    background: var(--bg-surface);
+    color: var(--text-muted);
   }
 
   .tg-caption {
     font-size: 13px;
-    color: #707579;
+    color: var(--text-muted);
     margin: 8px 14px 0;
     line-height: 1.4;
     flex-shrink: 0;
@@ -2712,7 +2574,7 @@
 
   .tg-caption-tag {
     margin-top: 4px;
-    color: #555555;
+    color: var(--text-secondary);
     font-size: 11px;
   }
 
@@ -2723,38 +2585,16 @@
   .tg-segmented {
     display: flex;
     gap: 8px;
-    background: #2b2b2b;
+    background: var(--bg-surface);
     border-radius: 12px;
     padding: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
     flex-shrink: 0;
   }
 
-  .tg-seg-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    padding: 8px 4px;
-    border: none;
-    background: transparent;
-    color: #707579;
-    border-radius: 9px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
+  :global(.profilemodal-tg-seg-btn)  { flex: 1; }
 
-  .tg-seg-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.04);
-  }
 
-  .tg-seg-btn.active {
-    background: #3390ec;
-    color: #ffffff;
-  }
 
   .tg-seg-title {
     font-size: 12px;
@@ -2776,36 +2616,21 @@
     background: transparent;
     border: none;
     outline: none;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 14px;
     font-family: inherit;
   }
 
   .tg-input::placeholder {
-    color: #707579;
+    color: var(--text-muted);
   }
 
-  .tg-eye-btn {
-    border: none;
-    background: transparent;
-    color: #707579;
-    padding: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: color 0.15s;
-    flex-shrink: 0;
-  }
+  :global(.profilemodal-tg-eye-btn)  { flex-shrink: 0; }
 
-  .tg-eye-btn:hover {
-    color: #ffffff;
-  }
 
   .tg-badge-soon {
-    background: rgba(255, 255, 255, 0.06);
-    color: #707579;
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-muted);
   }
 
   .tg-disabled-row {
@@ -2819,23 +2644,7 @@
     align-items: center;
   }
 
-  .tg-btn-member-more {
-    background: none;
-    border: none;
-    color: #8e8e93;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, color 0.15s;
-  }
 
-  .tg-btn-member-more:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-  }
 
   .tg-card.tg-members-card {
     overflow: visible;
@@ -2857,32 +2666,13 @@
     margin-bottom: 4px;
   }
 
-  .tg-load-more-members {
-    width: 100%;
-    padding: 12px;
-    background: none;
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    color: #5288c1;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    text-align: center;
-    transition: background 0.15s;
-  }
+  :global(.profilemodal-tg-load-more-members)  { width: 100%; }
 
-  .tg-load-more-members:hover {
-    background: rgba(255, 255, 255, 0.04);
-  }
 
-  .tg-load-more-members:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
 
   .tg-requests-row {
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   .tg-icon-requests {
@@ -2919,11 +2709,6 @@
     color: #ffb300;
   }
 
-  .tg-content-transition {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
 
   .tg-invite-row {
     cursor: pointer;
@@ -2931,6 +2716,6 @@
   }
 
   .tg-invite-row:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-surface);
   }
 </style>

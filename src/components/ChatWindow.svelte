@@ -1,4 +1,5 @@
 <script>
+  import IconButton from "$components/ui/IconButton.svelte";
   import {
     getContext,
     onMount,
@@ -1419,34 +1420,34 @@
     {#if $isSelecting}
       <div class="action-header" transition:fly={{ y: -56, duration: 180 }}>
         <div class="action-left">
-          <button class="icon-btn" on:click={clearSelection} aria-label="Отменить выбор">
+          <IconButton variant="ghost" onclick={clearSelection} aria-label="Отменить выбор">
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-          </button>
+          </IconButton>
           <span class="selection-count">{$selectedCount}</span>
         </div>
 
         <div class="action-right">
-          <button class="icon-btn" on:click={handleCopySelected} title="Копировать">
+          <IconButton variant="ghost" onclick={handleCopySelected} title="Копировать">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
-          </button>
-          <button class="icon-btn" on:click={handleForwardSelected} title="Переслать">
+          </IconButton>
+          <IconButton variant="ghost" onclick={handleForwardSelected} title="Переслать">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
               <polyline points="15 14 20 9 15 4"></polyline>
               <path d="M4 20v-7a4 4 0 0 1 4-4h12"></path>
             </svg>
-          </button>
-          <button class="icon-btn" on:click={handleDeleteSelected} title="Удалить">
+          </IconButton>
+          <IconButton variant="ghost" onclick={handleDeleteSelected} title="Удалить">
             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-          </button>
+          </IconButton>
         </div>
       </div>
     {/if}
@@ -1652,7 +1653,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    color: #ccc;
+    color: var(--text-primary);
     z-index: 20;
     top: 0;
     left: 0;
@@ -1717,12 +1718,12 @@
   }
 
   .message-list-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface-2);
     border-radius: 4px;
   }
 
   .message-list-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-surface-2);
   }
 
   .grab-scroll {
@@ -1760,13 +1761,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #252525;
+    background-color: var(--bg-surface);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 12px;
     box-sizing: border-box;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-subtle);
     z-index: 30;
   }
 
@@ -1779,7 +1780,7 @@
   .selection-count {
     font-size: 17px;
     font-weight: 600;
-    color: #fff;
+    color: var(--text-primary);
   }
 
   .action-right {
@@ -1788,26 +1789,8 @@
     gap: 8px;
   }
 
-  .icon-btn {
-    background: none;
-    border: none;
-    color: #eee;
-    padding: 8px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s ease, transform 0.1s ease;
-  }
 
-  .icon-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
 
-  .icon-btn:active {
-    transform: scale(0.95);
-  }
 
   .delete-everyone-label {
     display: flex;
@@ -1815,7 +1798,7 @@
     gap: 8px;
     margin-top: 12px;
     font-size: 14px;
-    color: #e0e0e0;
+    color: var(--text-primary);
     cursor: pointer;
     user-select: none;
   }

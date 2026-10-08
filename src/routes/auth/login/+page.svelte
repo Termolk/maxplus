@@ -1,4 +1,5 @@
 <script>
+  import { Input } from "$components/ui";
   import { invoke } from "@tauri-apps/api/core";
   import { goto } from "$app/navigation";
 
@@ -87,7 +88,7 @@
   <h1>Вход</h1>
   <div class="form">
     <div class="error">{error}</div>
-    <input
+    <Input
       type="tel"
       bind:value={phone}
       placeholder="Номер телефона"
@@ -111,7 +112,7 @@
     align-items: center;
     min-height: 100vh;
     text-align: center;
-    color: #ddd;
+    color: var(--text-primary);
   }
 
   .auth-page h1 {
@@ -126,20 +127,11 @@
     max-width: min(300px, 90%);
   }
 
-  input {
-    padding: 0.75rem;
-    border-radius: 8px;
-    border: 1px solid #333;
-    font-size: 1rem;
-    background-color: #26262e;
-    color: #ccc;
-    outline: none;
-  }
 
   .link {
     margin-top: 20px;
     font-size: 15px;
-    color: #4a90e2;
+    color: var(--accent-primary);
     text-decoration: none;
     transition: transform 0.2s;
   }

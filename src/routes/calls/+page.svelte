@@ -68,7 +68,7 @@
 
 <style>
   .calls {
-    color: #999;
+    color: var(--text-muted);
     height: 100vh;
     height: 100dvh;
     width: 100vw;
@@ -82,7 +82,7 @@
   .calls .title {
     margin: 0;
     margin-bottom: 10px;
-    color: #eee;
+    color: var(--text-primary);
     font-size: 20px;
     font-weight: 700;
   }
@@ -106,7 +106,7 @@
     display: flex;
     gap: 30px;
     align-items: center;
-    color: #ddd;
+    color: var(--text-primary);
     font-size: 14px;
   }
 
@@ -114,7 +114,7 @@
     content: "";
     height: 1px;
     width: 6px;
-    background: #333;
+    background: var(--bg-surface-2);
     margin-top: 64px;
     margin-left: 58px;
     position: absolute;
@@ -124,7 +124,7 @@
     content: "";
     height: 64px;
     width: 1px;
-    background: #333;
+    background: var(--bg-surface-2);
     margin-left: 58px;
     position: absolute;
   }
@@ -132,7 +132,7 @@
   .call .duration {
     font-size: 13px;
     font-weight: 600;
-    color: #555;
+    color: var(--text-secondary);
     margin-left: auto;
     margin-right: 30px;
   }

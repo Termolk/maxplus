@@ -1,4 +1,5 @@
 <script>
+  import { IconButton } from "$components/ui";
   import { createEventDispatcher } from "svelte";
   import Avatar from "$components/main/Avatar.svelte";
   import Signature from "$components/main/Signature.svelte";
@@ -57,13 +58,9 @@
 
 <header>
   <div class="align-left">
-    <button
-      class="icon-button"
-      on:click|stopPropagation={handleClose}
-      aria-label="Back"
-    >
+    <IconButton class="chatheader-icon-button" onclick={(e) => { e.stopPropagation(); (handleClose)(e); }} aria-label="Back">
       <img src="icons/arrow.svg" alt="back" style="transform: scale(-1.7)" />
-    </button>
+    </IconButton>
     <div
       class="row"
       on:click={handleProfileClick}
@@ -105,7 +102,7 @@
     padding: 8px 0;
     cursor: grab;
     flex-shrink: 0;
-    background-color: #1e2024;
+    background-color: var(--bg-surface);
     z-index: 5;
   }
 
@@ -135,7 +132,7 @@
   }
 
   header .title {
-    color: white;
+    color: var(--text-primary);
     font-size: 18px;
     flex: 1;
     min-width: 0;
@@ -160,25 +157,9 @@
     align-items: center;
   }
 
-  .icon-button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-  }
+  :global(.chatheader-icon-button)  { width: 40px; flex-shrink: 0; }
 
-  .icon-button img {
-    transform: scale(1.1) translateX(-5px);
-  }
+  :global(.chatheader-icon-button) img  { transform: scale(1.1) translateX(-5px); }
 
   .fingerprint-badge {
     border: none;

@@ -1,4 +1,5 @@
 <script>
+  import { IconButton } from "$components/ui";
   import { invoke, convertFileSrc } from "@tauri-apps/api/core";
   import { platform } from "@tauri-apps/plugin-os";
   import { tick, onMount, onDestroy } from "svelte";
@@ -1778,15 +1779,9 @@
             </button>
           {/if}
 
-          <button
-            class="emoji-btn"
-            class:active={showStickerPanel}
-            type="button"
-            title="Эмодзи и стикеры"
-            on:click={toggleStickerPanel}
-          >
+          <IconButton active={showStickerPanel} class="input-emoji-btn" title="Эмодзи и стикеры" onclick={toggleStickerPanel}>
             <img src="icons/smile.svg" alt="smile" />
-          </button>
+          </IconButton>
         </div>
 
         {#if newMessage.length || attaches.length || ($forwardDraft && $forwardDraft.messages?.length > 0)}
@@ -1900,7 +1895,7 @@
   }
 
   .input-container:focus-within {
-    background-color: #23262d;
+    background-color: var(--bg-surface-2);
   }
 
   .textarea-wrapper {
@@ -1936,7 +1931,7 @@
 
   .backdrop-span.bold-text {
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-primary);
   }
 
   .backdrop-span.italic-text {
@@ -1957,7 +1952,7 @@
   }
 
   .backdrop-span.code-text {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--bg-surface-2);
     color: #f59e0b;
     border-radius: 3px;
   }
@@ -2009,7 +2004,7 @@
 
   textarea.has-formatting::selection {
     background: rgba(59, 130, 246, 0.4);
-    color: #ffffff !important;
+    color: var(--text-primary) !important;
   }
 
   textarea::placeholder {
@@ -2032,8 +2027,8 @@
   }
 
   .button:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    background: var(--bg-surface);
   }
 
   .button:active {
@@ -2051,42 +2046,15 @@
   }
 
   .send-button:hover {
-    color: #fff;
+    color: var(--text-primary);
     background: var(--accent-primary);
   }
 
-  .emoji-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 38px;
-    height: 38px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.65;
-    border-radius: 50%;
-    transition: all 0.18s ease;
-    flex-shrink: 0;
-  }
+  :global(.input-emoji-btn)  { width: 38px; margin-right: 5px; margin-bottom: 5px; flex-shrink: 0; }
 
-  .emoji-btn img {
-    width: 22px;
-    height: 22px;
-  }
+  :global(.input-emoji-btn) img  { width: 22px; }
 
-  .emoji-btn:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.08);
-  }
 
-  .emoji-btn.active {
-    opacity: 1;
-    background: var(--accent-subtle-hover);
-    filter: brightness(1.2);
-  }
 
   .bot-cmd-btn {
     background: none;
@@ -2109,8 +2077,8 @@
 
   .bot-cmd-btn:hover {
     opacity: 1;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    background: var(--bg-surface);
   }
 
   .bot-cmd-btn.active {

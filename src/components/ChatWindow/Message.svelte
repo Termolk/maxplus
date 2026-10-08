@@ -1,4 +1,5 @@
 <script>
+  import { IconButton } from "$components/ui";
   import { createEventDispatcher, onMount } from "svelte";
   import { writable } from "svelte/store";
   import { openPath } from "@tauri-apps/plugin-opener";
@@ -534,12 +535,7 @@
           </svg>
           <span>Транскрипция</span>
         </div>
-        <button
-          type="button"
-          class="transcription-close-btn"
-          on:click|stopPropagation={() => toggleTranscriptionExpanded(msg.id)}
-          title="Скрыть"
-        >✕</button>
+        <IconButton class="message-transcription-close-btn" onclick={(e) => { e.stopPropagation(); (() => toggleTranscriptionExpanded(msg.id))(e); }} title="Скрыть">✕</IconButton>
       </div>
       {#if transcription.status === 'loading'}
         <div class="transcription-loading">
@@ -617,7 +613,7 @@
   }
 
   .message-bubble {
-    color: #fff;
+    color: var(--text-primary);
     padding: 8px 4px 8px 12px;
     border-radius: 16px 16px 16px 0;
     min-width: 100px;
@@ -707,7 +703,7 @@
 
   .message-row.is-me:not(.is-system) .message-bubble {
     border-radius: 16px 16px 0px 16px;
-    background: #7b4cd6;
+    background: var(--accent-violet);
   }
 
   .message-row.is-me:not(.is-system) .message-bubble::before {
@@ -769,7 +765,7 @@
   }
 
   .message-row:not(.is-me, .is-system) .message-bubble {
-      background: #3a3c55;
+      background: var(--bubble-incoming);
   }
 
   .message-row.is-deleted .message-bubble {
@@ -794,7 +790,7 @@
     border-left: 2px solid #34b7f1;
     padding-left: 8px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-surface);
     border-radius: 4px 12px 12px 4px;
     padding-top: 4px;
     padding-bottom: 4px;
@@ -920,7 +916,7 @@
     align-items: center;
     gap: 5px;
     font-size: 11px;
-    color: #ef4444;
+    color: var(--status-danger);
     margin-bottom: 4px;
     font-weight: 500;
   }
@@ -937,7 +933,7 @@
 
   .deleted-badge {
     font-size: 10px;
-    color: #ef4444;
+    color: var(--status-danger);
     font-weight: 600;
     margin-right: 2px;
   }
@@ -946,7 +942,7 @@
     background: transparent;
     border: none;
     font-size: 10px;
-    color: #8b929e;
+    color: var(--text-muted);
     cursor: pointer;
     padding: 0 2px;
     border-radius: 3px;
@@ -954,7 +950,7 @@
   }
 
   .edited-badge:hover {
-    color: #38bdf8;
+    color: var(--accent-primary);
     text-decoration: underline;
   }
 
@@ -978,13 +974,13 @@
     height: 10px;
     top: 1px;
     fill: currentColor;
-    color: #8e8e93;
+    color: var(--text-muted);
   }
 
   .status-icon.is-sending {
     width: 12px;
     height: 12px;
-    color: #8e8e93;
+    color: var(--text-muted);
     stroke: currentColor;
     fill: none;
     top: 0;
@@ -993,7 +989,7 @@
   .status-icon.is-sent {
     width: 13px;
     height: 10px;
-    color: #8e8e93;
+    color: var(--text-muted);
     fill: currentColor;
   }
 
@@ -1031,7 +1027,7 @@
       background: rgba(255,255,255,0);
     }
     30% {
-      background: rgba(255,255,255,0.12);
+      background: var(--bg-surface-2);
     }
     100% {
       background: rgba(255,255,255,0);
@@ -1104,7 +1100,7 @@
   }
 
   .sticker-floating-meta .timestamp {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-secondary);
     font-size: 11px;
     font-weight: 500;
   }
@@ -1113,7 +1109,7 @@
     width: 13px;
     height: 10px;
     fill: currentColor;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text-secondary);
   }
 
   .sticker-floating-meta .status-ticks svg.is-sending {
@@ -1177,7 +1173,7 @@
     margin-bottom: 4px;
     font-size: 11px;
     font-weight: 600;
-    color: #38bdf8;
+    color: var(--accent-primary);
   }
 
   .transcription-title {
@@ -1186,20 +1182,7 @@
     gap: 5px;
   }
 
-  .transcription-close-btn {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    font-size: 11px;
-    padding: 2px 4px;
-    border-radius: 4px;
-  }
 
-  .transcription-close-btn:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-  }
 
   .transcription-loading {
     display: flex;
@@ -1215,7 +1198,7 @@
     width: 14px;
     height: 14px;
     border: 2px solid rgba(56, 189, 248, 0.25);
-    border-top-color: #38bdf8;
+    border-top-color: var(--accent-primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }

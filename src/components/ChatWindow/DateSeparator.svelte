@@ -28,7 +28,7 @@
   .date-separator {
     text-align: center;
     margin: 8px 0 16px 0;
-    color: #aaa;
+    color: var(--text-muted);
     position: relative;
   }
 
