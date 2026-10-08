@@ -4,12 +4,12 @@
    * variant: 'ghost' — прозрачная круглая (тулбары выделения),
    *          'outline' — круглая 40px с обводкой (плеер),
    *          'square' — квадратная 28px (панели настроек/логов).
-   * @type {{ variant?: 'ghost' | 'outline' | 'square', onclick?: (e: MouseEvent) => void, class?: string, children?: import('svelte').Snippet, [key: string]: any }}
+   * @type {{ variant?: 'ghost' | 'outline' | 'square' | 'overlay', onclick?: (e: MouseEvent) => void, class?: string, children?: import('svelte').Snippet, [key: string]: any }}
    */
-  let { variant = 'ghost', onclick, class: className = '', children, ...rest } = $props();
+  let { variant = 'ghost', active = false, danger = false, onclick, class: className = '', children, ...rest } = $props();
 </script>
 
-<button type="button" class="icon-button icon-button--{variant} {className}" {onclick} {...rest}>
+<button type="button" class="icon-button icon-button--{variant} {className}" class:icon-button--active={active} class:icon-button--danger={danger} aria-pressed={active || undefined} {onclick} {...rest}>
   {@render children?.()}
 </button>
 
@@ -67,4 +67,8 @@
   .icon-button--square:hover { background: #383844; color: var(--text-primary); }
   .icon-button--square :global(img) { width: 14px; height: 14px; opacity: 0.8; }
   .icon-button--square:hover :global(img) { opacity: 1; }
+  .icon-button--active { color: var(--accent-primary); background: var(--accent-subtle); }
+  .icon-button--danger { color: var(--status-danger); }
+  .icon-button--overlay { width: 40px; height: 40px; border-radius: 50%; color: #fff; background: rgba(0, 0, 0, 0.4); }
+  .icon-button--overlay:hover { background: rgba(0, 0, 0, 0.55); }
 </style>

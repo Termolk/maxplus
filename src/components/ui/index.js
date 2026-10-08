@@ -10,3 +10,6 @@ export { default as Section } from './Section.svelte';
 export { default as PageHeader } from './PageHeader.svelte';
 export { default as EmptyState } from './EmptyState.svelte';
 export { default as Spinner } from './Spinner.svelte';
+export { default as Menu } from './Menu.svelte';
+export { default as MenuItem } from './MenuItem.svelte';
+export { default as Tab } from './Tab.svelte';
