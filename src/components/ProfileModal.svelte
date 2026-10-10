@@ -1021,12 +1021,10 @@
       </div>
 
       <div class="tg-menu-container">
-        {#if chat}
-          <IconButton class="profilemodal-tg-icon-btn" onclick={(e) => { e.stopPropagation(); (toggleMenu)(e); }} aria-label="Меню">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="1.5"></circle>
-              <circle cx="12" cy="5" r="1.5"></circle>
-              <circle cx="12" cy="19" r="1.5"></circle>
+        {#if chat?.admins?.includes($currentUser)}
+          <IconButton class="profilemodal-tg-icon-btn" onclick={() => handleAction("edit")} aria-label="Изменить">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
           </IconButton>
         {/if}
@@ -1173,7 +1171,7 @@
             <Avatar
               chat={chat}
               contactId={$contact?.id ?? userId}
-              size={96}
+              size={84}
             />
             {#if canUploadAvatar}
               <button
@@ -1244,6 +1242,18 @@
                   </svg>
                 </div>
                 <span class="tg-action-label">Ссылка</span>
+              </Button>
+            {/if}
+            {#if chat}
+              <Button class="profilemodal-tg-action-btn" onclick={(e) => { e.stopPropagation(); toggleMenu(e); }}>
+                <div class="tg-action-circle">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <circle cx="5" cy="12" r="1.8"/>
+                    <circle cx="12" cy="12" r="1.8"/>
+                    <circle cx="19" cy="12" r="1.8"/>
+                  </svg>
+                </div>
+                <span class="tg-action-label">Ещё</span>
               </Button>
             {/if}
           </div>
@@ -2717,5 +2727,143 @@
 
   .tg-invite-row:hover {
     background: var(--bg-surface);
+  }
+
+  /* ===== Profile redesign (reference: Info screen) ===== */
+  .tg-profile-panel {
+    --profile-page-bg: #ebedf0;
+    --profile-card-bg: var(--max-surface, #fff);
+    --profile-accent: var(--max-accent, #2f6fe0);
+    --profile-text: var(--max-text, #060708);
+    --profile-muted: var(--max-text-3, #7a7d82);
+    background: var(--profile-page-bg);
+    border-left: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    .tg-profile-panel { --profile-page-bg: #0f1013; }
+  }
+
+  .tg-topbar {
+    position: relative;
+    min-height: 56px;
+    padding: 8px 12px;
+    background: var(--profile-card-bg);
+    border-bottom: none;
+  }
+  .tg-topbar-title {
+    position: absolute;
+    left: 64px;
+    right: 64px;
+    margin: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--profile-text);
+    pointer-events: none;
+  }
+  .tg-menu-container { margin-left: auto; }
+  .tg-profile-panel :global(.profilemodal-tg-icon-btn) { color: var(--profile-text); }
+
+  .tg-tabs {
+    background: var(--profile-card-bg);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .tg-tab-page-content { padding: 20px 12px calc(24px + env(safe-area-inset-bottom)); }
+
+  .tg-hero {
+    padding: 4px 0 0;
+    border-bottom: none;
+  }
+  .tg-avatar-wrap { margin-bottom: 14px; }
+  .tg-hero-name {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: var(--profile-text);
+  }
+  .tg-hero-status {
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--profile-muted);
+  }
+
+  .tg-actions-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: nowrap;
+  }
+  .tg-profile-panel :global(.profilemodal-tg-action-btn) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    max-width: none;
+    height: 62px;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 16px;
+    background: var(--profile-card-bg);
+    box-shadow: none;
+  }
+  .tg-profile-panel :global(.profilemodal-tg-action-btn):active { transform: scale(0.97); }
+  .tg-action-circle {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--profile-accent);
+  }
+  .tg-action-label {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 16px;
+    color: var(--profile-accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .tg-card {
+    margin-top: 12px;
+    border: none;
+    border-radius: 16px;
+    background: var(--profile-card-bg);
+  }
+  .tg-row {
+    padding: 10px 16px;
+    border-bottom: none;
+  }
+
+  /* Info rows with a copy button: label above, blue value, no left icon */
+  .tg-profile-panel :global(.tg-row:has(.profilemodal-tg-copy-btn) .tg-row-icon) { display: none; }
+  .tg-profile-panel :global(.tg-row:has(.profilemodal-tg-copy-btn) .tg-row-main) {
+    flex-direction: column-reverse;
+    gap: 1px;
+  }
+  .tg-profile-panel :global(.tg-row:has(.profilemodal-tg-copy-btn) .tg-row-title) {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 22px;
+    color: var(--profile-accent);
+  }
+  .tg-profile-panel :global(.tg-row:has(.profilemodal-tg-copy-btn) .tg-row-subtitle) {
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--profile-muted);
+  }
+  .tg-profile-panel :global(.profilemodal-tg-copy-btn) { color: var(--profile-accent); }
+
+  .tg-section-header {
+    color: var(--profile-muted);
   }
 </style>

@@ -62,33 +62,26 @@
   }
 </script>
 
-<header
-  class="reference-chat-header"
-  style="box-sizing: border-box; display: flex; align-items: center; flex-shrink: 0; width: 100%; min-width: 0; height: calc(64px + env(safe-area-inset-top, 0px)); min-height: calc(64px + env(safe-area-inset-top, 0px)); padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px; gap: 8px; background: var(--bg-surface, #fff); color: var(--text-primary, #303030); border-bottom: none; box-shadow: none;"
->
-  <div class="align-left" style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 12px; overflow: hidden;">
+<header class="reference-chat-header">
+  <div class="align-left">
     <IconButton class="chatheader-icon-button" onclick={(e) => { e.stopPropagation(); handleClose(); }} aria-label="Назад">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M19 12H5m7-7-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </IconButton>
-    <div
-      class="row"
-      style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 12px; overflow: hidden;"
-      on:click={handleProfileClick}
-    >
+    <div class="row" on:click={handleProfileClick}>
       <Avatar size={40} {chat} contactId={avatarUserId} style="flex-shrink: 0; cursor: pointer;"/>
-      <div class="info" style="display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 0; gap: 2px; overflow: hidden;">
-        <div class="title-row" style="display: flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%;">
-          <a class="title" style="display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 600; line-height: 21px; color: inherit;">{title}</a>
+      <div class="info">
+        <div class="title-row">
+          <a class="title">{title}</a>
           {#if isOfficial}
-            <svg class="verified-badge" width="18" height="18" viewBox="0 0 24 24" aria-label="Официальный" style="flex-shrink: 0;">
-              <path fill="#2D9CFF" d="M12 1.5l2.6 1.9 3.2-.1 1 3.1 2.6 1.9-1 3.1 1 3.1-2.6 1.9-1 3.1-3.2-.1L12 22.5l-2.6-1.9-3.2.1-1-3.1-2.6-1.9 1-3.1-1-3.1 2.6-1.9 1-3.1 3.2.1z" />
+            <svg class="verified-badge" width="18" height="18" viewBox="0 0 24 24" aria-label="Официальный">
+              <path fill="#3478F6" d="M12 1.5l2.6 1.9 3.2-.1 1 3.1 2.6 1.9-1 3.1 1 3.1-2.6 1.9-1 3.1-3.2-.1L12 22.5l-2.6-1.9-3.2.1-1-3.1-2.6-1.9 1-3.1-1-3.1 2.6-1.9 1-3.1 3.2.1z" />
               <path d="M8 12.3l2.6 2.6 5.6-5.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           {/if}
         </div>
-        <a class="presence" style="display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 400; line-height: 18px; color: var(--text-secondary, #808080);"><Signature {chat} contactId={avatarUserId} /></a>
+        <a class="presence"><Signature {chat} contactId={avatarUserId} /></a>
       </div>
     </div>
   </div>
@@ -130,14 +123,21 @@
 
 <style>
   header.reference-chat-header {
-    min-height: calc(64px + env(safe-area-inset-top, 0px));
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+    height: calc(64px + env(safe-area-inset-top, 0px));
     padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
     gap: 8px;
-    background-color: var(--bg-surface, #fff);
-    color: var(--text-primary, #303030);
+    background: var(--max-surface, #fff);
+    color: var(--max-text, #060708);
     cursor: default;
     box-shadow: none;
-    border-bottom: none;
+    border: 0;
+    z-index: 5;
   }
 
   .reference-chat-header .align-left {
@@ -149,24 +149,34 @@
   }
 
   .reference-chat-header .row {
+    display: flex;
+    align-items: center;
     flex: 1 1 0;
     min-width: 0;
     gap: 12px;
-    overflow: hidden;
+    cursor: pointer;
   }
 
   .reference-chat-header .info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     flex: 1 1 0;
     min-width: 0;
-    gap: 3px;
+    gap: 2px;
     overflow: hidden;
   }
 
-  .reference-chat-header .title {
+  .reference-chat-header .title-row {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  header.reference-chat-header .title {
     display: block;
-    max-width: 100%;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -177,14 +187,22 @@
     text-decoration: none;
   }
 
-  .reference-chat-header .presence {
+  .reference-chat-header .verified-badge {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  header.reference-chat-header .presence {
     display: block;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: 13px;
-    line-height: 17px;
-    color: var(--text-secondary, #808080);
+    font-weight: 400;
+    line-height: 18px;
+    color: var(--max-text-3, #808080);
     text-decoration: none;
   }
 
@@ -193,96 +211,20 @@
     align-items: center;
     flex: 0 0 auto;
     gap: 4px;
-    margin-left: auto;
+    margin: 0;
   }
 
-  .reference-chat-header :global(.chatheader-icon-button) {
+  header.reference-chat-header :global(.chatheader-icon-button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     flex: 0 0 40px;
     width: 40px;
     height: 40px;
     padding: 8px;
-    color: inherit;
+    color: var(--max-icon, #303030) !important;
   }
-
-  @media (prefers-color-scheme: light) {
-    header.reference-chat-header {
-      background-color: #fff;
-    }
-  }
-  header {
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    min-height: 60px;
-    padding: 8px 0;
-    padding-top: calc(8px + env(safe-area-inset-top, 0px));
-    cursor: grab;
-    flex-shrink: 0;
-    background-color: var(--bg-surface, #f6f6fb);
-    z-index: 5;
-  }
-
-  .row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    flex: 1;
-    min-width: 0;
-    padding-left: 6px;
-  }
-
-  header .info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 3px;
-    overflow: hidden;
-    min-width: 0;
-  }
-
-  header .info .presence {
-    color: var(--text-secondary, #808080);
-    font-size: 14px;
-    line-height: 18px;
-    font-weight: 400;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    min-width: 0;
-  }
-
-  header .title {
-    color: var(--text-primary, #111111);
-    font-size: 17px;
-    line-height: 22px;
-    font-weight: 600;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  header .align-left {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex: 1;
-    min-width: 0;
-  }
-
-  header .align-right {
-    flex: 0 0 auto;
-    margin-left: auto;
-    margin-right: 8px;
-    display: flex;
-    align-items: center;
-  }
-
-  :global(.chatheader-icon-button)  { width: 40px; flex-shrink: 0; }
-
-  :global(.chatheader-icon-button) img  { transform: scale(1.1) translateX(-5px); }
 
   .fingerprint-badge {
     border: none;

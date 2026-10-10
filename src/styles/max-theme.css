@@ -171,6 +171,66 @@
 .chat-window .message-bubble-container:has(.inline-keyboard) .message-bubble { border-radius: 16px 16px 6px 6px !important; }
 .chat-window .message-bubble-container:has(.inline-keyboard) .message-bubble::before { display: none !important; }
 
+/* Outgoing text bubbles: reference typography and a separate metadata row.
+   Keep this beside the theme's !important rules so they cannot override it. */
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) {
+  --outgoing-text-size: 16px;
+  --outgoing-text-line: 20px;
+  background: var(--max-out-bubble) !important;
+  border-radius: 18px 18px 6px 18px !important;
+  padding: 8px 10px 6px !important;
+  min-width: 100px;
+  min-height: 0;
+  height: auto;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) > .direction {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .text {
+  white-space: normal;
+  padding: 0 !important;
+  margin: 0;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) :is(.text, .text .rich-content, .text .line, .text p, .text span:not(.bold-text)) {
+  font-size: var(--outgoing-text-size) !important;
+  line-height: var(--outgoing-text-line) !important;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .text :is(.paragraph-container, .line) {
+  white-space: pre-wrap;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .bottom {
+  position: static !important;
+  flex: 0 0 auto;
+  align-self: stretch;
+  justify-content: space-between;
+  margin: 2px 0 0 !important;
+  padding: 0 !important;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .message-status {
+  margin: 0 0 0 auto;
+  padding: 0;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .timestamp {
+  color: #8fb1dc !important;
+  opacity: 1;
+  font-size: 12px !important;
+  line-height: 16px !important;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .status-icon {
+  color: #6b7280 !important;
+}
+
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .status-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-window .message-row.is-me:not(.is-system):not(.is-sticker):not(.is-video-note) .message-bubble:not(:has(.media-grid)) .status-ticks {
+  color: #6b7280 !important;
+}
+
 /* incoming-spacing: отступы входящего сообщения из MAX (.block / .messageWrapper / .bubble / .meta) */
 .chat-window .message-row:not(.is-me):not(.is-system) {
   padding: 0 56px 0 6px !important; margin: 1px 0 !important; box-sizing: border-box; }
