@@ -184,9 +184,8 @@
     msg.reactionInfo?.totalCount ||
     msg.link?.messageId;
 
-  $: showAvatar =
-    chat.type !== "CHANNEL" &&
-    !isSystem;
+  $: showAvatar = // MAX: аватарки только у входящих в групповых чатах
+    !isMe && !isSystem && chat?.type === "CHAT";
 
   $: inlineKeyboardAttach = effectiveAttaches?.find(x => x._type === "INLINE_KEYBOARD");
   $: stickerAttach = effectiveAttaches?.find(x => x._type === "STICKER");
@@ -322,7 +321,7 @@
           />
           <div class="sticker-floating-meta">
             <span class="timestamp"
-              >{new Date(msg.time).toLocaleTimeString([], {
+              >{new Date(msg.time).toLocaleTimeString("en-US", { hour12: true,
                 hour: "2-digit",
                 minute: "2-digit",
               })}</span
@@ -430,9 +429,20 @@
               </svg>
               <span>Сообщение удалено</span>
               {#if msg.deleted_at || msg.deletedAt}
-                <span class="deleted-notice-time">({new Date(msg.deleted_at || msg.deletedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})</span>
+                <span class="deleted-notice-time">({new Date(msg.deleted_at || msg.deletedAt).toLocaleTimeString("en-US", { hour12: true, hour: "2-digit", minute: "2-digit" })})</span>
               {/if}
             </div>
+          {/if}
+
+          {#if effectiveAttaches?.length}
+            <Attachments
+              {getFile}
+              attaches={effectiveAttaches}
+              {handleMediaClick}
+              chatId={msg?.chatId ?? chat?.id}
+              messageId={msg?.id}
+              {isMe}
+            />
           {/if}
 
           {#if decoded?.error || rawText.includes('<b style="color:#f66">')}
@@ -452,16 +462,6 @@
             />
           {/if}
 
-          {#if effectiveAttaches?.length}
-            <Attachments
-              {getFile}
-              attaches={effectiveAttaches}
-              {handleMediaClick}
-              chatId={msg?.chatId ?? chat?.id}
-              messageId={msg?.id}
-              {isMe}
-            />
-          {/if}
         {/if}
       </div>
       <div class={column ? "bottom cmn" : "bottom"}>
@@ -492,7 +492,7 @@
               </button>
             {/if}
             <span class="timestamp"
-              >{new Date(msg.time).toLocaleTimeString([], {
+              >{new Date(msg.time).toLocaleTimeString("en-US", { hour12: true,
                 hour: "2-digit",
                 minute: "2-digit",
               })}</span
@@ -615,7 +615,7 @@
   .message-bubble {
     color: var(--text-primary);
     padding: 8px 4px 8px 12px;
-    border-radius: 16px 16px 16px 0;
+    border-radius: 18px;
     min-width: 100px;
     width: 100%;
     box-sizing: border-box;
@@ -623,7 +623,8 @@
     position: relative;
     user-select: text;
     -webkit-user-select: text;
-  }
+
+    box-shadow: none;}
 
   .text {
     min-width: 0;
@@ -634,7 +635,9 @@
 
   .message-bubble.column .text {
     padding-right: 10px;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .message-row .message-bubble::before {
     content: "";
@@ -645,7 +648,9 @@
     position: absolute;
     bottom: 0;
     background: inherit;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .message-row.is-system {
     display: flex;
@@ -669,16 +674,19 @@
 
   .message-row.is-system .message-bubble::before {
     display: none !important;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .message-row.is-system .message-bubble {
-    border-radius: 12px;
+    border-radius: 18px;
     padding: 6px 14px;
     background: rgba(45, 48, 60, 0.85);
     width: auto;
     min-width: 0;
     text-align: center;
-  }
+
+    box-shadow: none;}
 
   .message-row.is-system .direction {
     display: flex;
@@ -702,15 +710,19 @@
   }
 
   .message-row.is-me:not(.is-system) .message-bubble {
-    border-radius: 16px 16px 0px 16px;
-    background: var(--accent-violet);
-  }
+    border-radius: 18px;
+    background: #e2f3ff;
+
+    box-shadow: none;
+    min-width: 0;}
 
   .message-row.is-me:not(.is-system) .message-bubble::before {
     left: inherit;
     right: -10px;
     clip-path: path("M0 0 Q5 10 10 10 Q10 10 0 10 Z");
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .message-row.is-me:not(.is-system) .indent {
     display: none;
@@ -727,14 +739,17 @@
     }
 
     .message-row.is-me:not(.is-system) .message-bubble {
-      border-radius: 16px 16px 16px 0;
-    }
+      border-radius: 18px;
+
+    box-shadow: none;}
 
     .message-row.is-me:not(.is-system) .message-bubble::before {
       left: -10px;
       right: inherit;
       clip-path: path("M10 0 Q5 10 0 10 Q0 10 10 10 Z");
-    }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
     .message-row.is-me:not(.is-system) .indent {
       display: block;
@@ -755,34 +770,46 @@
   }
 
   .message-row.is-channel:not(.is-system) .message-bubble {
-    border-radius: 16px 16px 16px 0;
-  }
+    border-radius: 18px;
+
+    box-shadow: none;}
 
   .message-row.is-channel:not(.is-system) .message-bubble::before {
     left: -10px;
     right: inherit;
     clip-path: path("M10 0 Q5 10 0 10 Q0 10 10 10 Z");
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .message-row:not(.is-me, .is-system) .message-bubble {
-      background: var(--bubble-incoming);
-  }
+      background: #e2f3ff;
+
+    border-radius: 18px;
+    box-shadow: none;
+    min-width: 0;}
 
   .message-row.is-deleted .message-bubble {
     background-color: #c99;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   /* динамичная сетка */
 
   .message-bubble.row .direction {
     display: flex;
     gap: 10px;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .message-bubble.column .direction {
     display: flex;
     flex-direction: column;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   /* связанные сообщения */
 
@@ -872,9 +899,12 @@
 
   .bottom {
     display: flex;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 15px;
-    margin-right: 4px;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    min-width: 0;
+    margin-right: 0;
     flex: 1;
   }
 
@@ -884,17 +914,22 @@
 
   .message-status {
     display: flex;
-    gap: 6px;
-    align-items: end;
+    flex-shrink: 0;
+    gap: 5px;
+    align-items: center;
+    align-self: flex-end;
     white-space: nowrap;
     margin-left: auto;
     margin-right: 0;
-    margin-bottom: -3px;
+    margin-bottom: 0;
+    padding-top: 2px;
+    line-height: 1;
   }
 
   .status-meta {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 6px;
   }
 
   .views {
@@ -955,14 +990,20 @@
   }
 
   .timestamp {
-    font-size: 11px;
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
     opacity: 0.5;
   }
 
   .status-ticks {
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
-    align-self: end;
+    align-self: center;
+    line-height: 1;
   }
 
   .status-ticks * {
@@ -1051,14 +1092,17 @@
 
   .message-row.is-video-note .message-bubble {
     background: transparent !important;
-    box-shadow: none !important;
+    box-shadow: none;
     border: none !important;
     padding: 0 !important;
-  }
+
+    border-radius: 18px;}
 
   .message-row.is-video-note .message-bubble::before {
     display: none !important;
-  }
+
+    border-radius: 18px;
+    box-shadow: none;}
 
   .sticker-bubble {
     background: transparent !important;

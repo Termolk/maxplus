@@ -134,8 +134,6 @@
     cleanupBack();
   };
 
-
-
   function handleSetReply() {
     const targetMsg = activeAt?.msg;
     if (targetMsg) {
@@ -518,7 +516,6 @@
   :global(.dropout-picker-back-btn),
   :global(.dropout-picker-close-btn)  { width: 28px; }
 
-
   .picker-title {
     font-size: 13px;
     font-weight: 600;
@@ -550,8 +547,6 @@
 
   :global(.dropout-action-row)  { width: 100%; }
 
-
-
   .action-icon {
     width: 18px;
     height: 18px;
@@ -570,18 +565,5 @@
     height: 1px;
     background: var(--bg-surface);
     margin: 4px 0;
-  }
-
-
-  .delete-row {
-    color: var(--status-danger);
-  }
-
-  .delete-row .action-icon {
-    color: var(--status-danger);
-  }
-
-  .delete-row:hover {
-    background: var(--danger-subtle);
   }
 </style>

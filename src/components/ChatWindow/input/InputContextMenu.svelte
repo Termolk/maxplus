@@ -491,10 +491,6 @@
 
   :global(.inputcontextmenu-action-row)  { width: 100%; }
 
-
-
-
-
   .action-icon {
     width: 18px;
     height: 18px;
@@ -557,21 +553,6 @@
     align-items: center;
   }
 
-  .action-check {
-    color: var(--accent-violet);
-    margin-left: 6px;
-    display: flex;
-    align-items: center;
-  }
-
-  .clear-row {
-    color: var(--status-danger);
-  }
-
-  .clear-row .action-icon {
-    color: var(--status-danger);
-  }
-
   .divider {
     height: 1px;
     background: var(--bg-surface);
@@ -612,9 +593,4 @@
     justify-content: flex-end;
     gap: 8px;
   }
-
-
-
-
-
 </style>

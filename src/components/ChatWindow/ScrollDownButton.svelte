@@ -49,11 +49,12 @@
     position: fixed;
     bottom: 80px;
     right: 10px;
-    width: 55px;
-    height: 55px;
+    width: 56px;
+    height: 56px;
     z-index: 100;
     transition: bottom 0.2s ease;
-  }
+
+    border-radius: 50%;}
 
   .scroll-down-container.nije {
     bottom: 20px;
@@ -100,7 +101,7 @@
     top: -5px;
     left: -5px;
     min-width: 22px;
-    height: 22px;
+    height: 56px;
     box-sizing: border-box;
     padding: 0 5px;
     background: #2b7fc3;
@@ -109,10 +110,12 @@
     font-weight: 600;
     line-height: 22px;
     text-align: center;
-    border-radius: 11px;
+    border-radius: 50%;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     pointer-events: auto;
     cursor: pointer;
     user-select: none;
-  }
+
+    width: 56px;
+    right: 10px;}
 </style>

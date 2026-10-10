@@ -6,6 +6,7 @@
 
   export let folders = [];
   export let activeFolder = null;
+  export let counts = new Map();
 
   const dispatch = createEventDispatcher();
 
@@ -141,6 +142,9 @@
           on:click={() => selectFolder(folder)}
         >
           {folder.title}
+          {#if !isEditing && (counts.get(folder.id) || 0) > 0}
+            <span class="tab-badge">{counts.get(folder.id) > 99 ? "99+" : counts.get(folder.id)}</span>
+          {/if}
         </button>
 
         {#if isEditing && folder.id !== 0 && folder.id !== "all.chat.folder"}
@@ -325,4 +329,11 @@
 
   :global(.foldertabs-add-tab-btn)  { margin: 4px; flex-shrink: 0; }
 
+  .tab-badge {
+    display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+    min-width: 20px; height: 20px; margin-left: 6px; padding: 0 6px; box-sizing: border-box;
+    border-radius: 10px; font-size: 13px; font-weight: 600; line-height: 1; color: #fff;
+    background: var(--text-secondary, #8a8a93);
+  }
+  .tab--active .tab-badge { background: var(--accent-primary); }
 </style>

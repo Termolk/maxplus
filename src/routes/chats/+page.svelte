@@ -267,6 +267,20 @@
   }
 
   function chatMatchesFolder(chat, folder, myId, contactIds) {
+    // Фильтр «Новые»: сервер может прислать его числом или строкой (UNREAD/NEW)
+    const UNREAD_FILTER = 0;
+    const raw = folder?.filters || [];
+    const isUnread = (f) => (UNREAD_FILTER !== null && Number(f) === UNREAD_FILTER) || /unread|new/i.test(String(f));
+    if (raw.some(isUnread)) {
+      if (!(Number(chat?.newMessages || 0) > 0)) return false;
+      const rest = raw.filter((f) => !isUnread(f));
+      if (rest.length === 0) return true;
+      return _chatMatchesFolderBase(chat, { ...folder, filters: rest }, myId, contactIds);
+    }
+    return _chatMatchesFolderBase(chat, folder, myId, contactIds);
+  }
+
+  function _chatMatchesFolderBase(chat, folder, myId, contactIds) {
     if (folder.id === 0 || folder.title === "Все" || folder.id === "all.chat.folder") {
       return true;
     }
@@ -574,6 +588,11 @@
 
   let showFolderModal = false;
   let folderToEdit = null;
+
+  // Счётчик на вкладке: число чатов с непрочитанными в папке
+  $: folderUnreadCounts = new Map(
+    [...chatsByFolderId].map(([id, list]) => [id, list.filter((c) => Number(c?.newMessages || 0) > 0).length])
+  );
 </script>
 
 <div class="layout">
@@ -714,6 +733,7 @@
 
   <FolderTabs
     folders={localFolders}
+    counts={folderUnreadCounts}
     bind:activeFolder
     on:folderChange={onFolderTabClick}
     on:reorder={handleReorderFolders}

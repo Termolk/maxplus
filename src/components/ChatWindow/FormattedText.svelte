@@ -11,7 +11,15 @@
   export let deleted = false;
   export let isSystem = false;
 
-  $: blocks = compileDisplayBlocks(text, elements);
+  // Боты иногда присылают **жирный** обычным текстом — превращаем в элементы
+  function mdBoldFallback(src, els) {
+    if (typeof src !== "string" || !src.includes("**") || (els && els.length)) return [src, els];
+    let out = "", res = [], last = 0, m; const re = /\*\*([^*\n]+?)\*\*/g;
+    while ((m = re.exec(src))) { out += src.slice(last, m.index); res.push({ type: "STRONG", from: out.length, length: m[1].length }); out += m[1]; last = m.index + m[0].length; }
+    return res.length ? [out + src.slice(last), res] : [src, els];
+  }
+
+  $: blocks = compileDisplayBlocks(...mdBoldFallback(text, elements));
 
   let activeLinkModal = null;
   let longPressTimer = null;

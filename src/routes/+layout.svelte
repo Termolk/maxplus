@@ -102,14 +102,6 @@
           console.warn("BackButton listener unavailable", e);
         }
       }
-    } else {
-      // Browser-only mode: inject mocks
-      const { injectMockData } = await import("$lib/mock-chats.js");
-      await injectMockData();
-      const { page: pageStore } = await import("$app/stores");
-      const currentPage = get(pageStore);
-      // Таббар (Panel) и карточки рендерятся только на "/", поэтому не уводим на /chats
-      if (currentPage.url.pathname === "/chats") goto("/", { replaceState: true });
     }
 
     handleKeydown = (e) => {

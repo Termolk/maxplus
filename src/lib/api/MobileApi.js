@@ -1679,7 +1679,7 @@ export default class MobileApi extends BaseAPI {
     currentSessionChats.update(chats => {
       if (!chats) return;
       const updated = chats.find(x => x.id === chatId);
-      if (updated) updated.newMessages = response.unread;
+      if (updated) updated.newMessages = Number(response?.unread ?? response?.payload?.unread ?? 0) || 0;
       return chats;
     });
 

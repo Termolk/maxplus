@@ -1,17 +1,20 @@
-let _invoke = async (...args) => {
-  console.warn("[browser-mode] invoke called but Tauri unavailable:", args[0]);
-  return null;
-};
+const _invoke = async (...args) => {
+  if (typeof window === "undefined" || !window.__TAURI_INTERNALS__) {
+    console.warn("[browser-mode] invoke called but Tauri unavailable:", args[0]);
+    return null;
+  }
 
-// Try to load Tauri invoke dynamically
-import("@tauri-apps/api/core").then(mod => {
-  _invoke = mod.invoke;
-}).catch(() => {});
+  // Wait for the bridge module on every call, including startup and login.
+  // Never silently skip account initialization or persistence while it loads.
+  const { invoke } = await import("@tauri-apps/api/core");
+  return invoke(...args);
+};
 
 export const addAccount = (token, device) => _invoke("accounts_add", { token, device });
 export const saveDataEntry = (id, file, value) => _invoke("data_save", { id, file, value });
 export const getAccounts = () => _invoke("accounts_get");
 export const loadAccount = async () => {
+  // The shared wrapper waits for the native bridge module before invoking.
   const current = await _invoke("current_get");
   if (!current) return null;
   const accounts = await _invoke("accounts_get");

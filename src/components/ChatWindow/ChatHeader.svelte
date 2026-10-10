@@ -37,6 +37,12 @@
     dispatch("openSettings");
   }
 
+  function handleSearch() {
+    dispatch("search");
+  }
+
+  $: isOfficial = !!(chat?.official || chat?.verified || chat?.isOfficial || chat?.options?.OFFICIAL || chat?.options?.official);
+
   function handleProfileClick() {
     if (!chat) return;
     if (chat.id === 0) {
@@ -56,19 +62,33 @@
   }
 </script>
 
-<header>
-  <div class="align-left">
-    <IconButton class="chatheader-icon-button" onclick={(e) => { e.stopPropagation(); (handleClose)(e); }} aria-label="Back">
-      <img src="icons/arrow.svg" alt="back" style="transform: scale(-1.7)" />
+<header
+  class="reference-chat-header"
+  style="box-sizing: border-box; display: flex; align-items: center; flex-shrink: 0; width: 100%; min-width: 0; height: calc(64px + env(safe-area-inset-top, 0px)); min-height: calc(64px + env(safe-area-inset-top, 0px)); padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px; gap: 8px; background: var(--bg-surface, #fff); color: var(--text-primary, #303030); border-bottom: none; box-shadow: none;"
+>
+  <div class="align-left" style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 12px; overflow: hidden;">
+    <IconButton class="chatheader-icon-button" onclick={(e) => { e.stopPropagation(); handleClose(); }} aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M19 12H5m7-7-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
     </IconButton>
     <div
       class="row"
+      style="display: flex; align-items: center; flex: 1; min-width: 0; gap: 12px; overflow: hidden;"
       on:click={handleProfileClick}
     >
-      <Avatar size={42} {chat} contactId={avatarUserId} style="margin-left: -8px; cursor: pointer;"/>
-      <div class="info">
-        <a class="title">{title}</a>
-        <a class="presence"><Signature {chat} contactId={avatarUserId} /></a>
+      <Avatar size={40} {chat} contactId={avatarUserId} style="flex-shrink: 0; cursor: pointer;"/>
+      <div class="info" style="display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 0; gap: 2px; overflow: hidden;">
+        <div class="title-row" style="display: flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%;">
+          <a class="title" style="display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 600; line-height: 21px; color: inherit;">{title}</a>
+          {#if isOfficial}
+            <svg class="verified-badge" width="18" height="18" viewBox="0 0 24 24" aria-label="Официальный" style="flex-shrink: 0;">
+              <path fill="#2D9CFF" d="M12 1.5l2.6 1.9 3.2-.1 1 3.1 2.6 1.9-1 3.1 1 3.1-2.6 1.9-1 3.1-3.2-.1L12 22.5l-2.6-1.9-3.2.1-1-3.1-2.6-1.9 1-3.1-1-3.1 2.6-1.9 1-3.1 3.2.1z" />
+              <path d="M8 12.3l2.6 2.6 5.6-5.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          {/if}
+        </div>
+        <a class="presence" style="display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 400; line-height: 18px; color: var(--text-secondary, #808080);"><Signature {chat} contactId={avatarUserId} /></a>
       </div>
     </div>
   </div>
@@ -92,38 +112,140 @@
         </div>
       {/if}
     {/if}
+    <IconButton class="chatheader-icon-button" onclick={handleSearch} aria-label="Поиск по чату">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+        <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </IconButton>
+    <IconButton class="chatheader-icon-button" onclick={handleOpenSettings} aria-label="Настройки чата">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="5" r="1.8" />
+        <circle cx="12" cy="12" r="1.8" />
+        <circle cx="12" cy="19" r="1.8" />
+      </svg>
+    </IconButton>
   </div>
 </header>
 
 <style>
+  header.reference-chat-header {
+    min-height: calc(64px + env(safe-area-inset-top, 0px));
+    padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
+    gap: 8px;
+    background-color: var(--bg-surface, #fff);
+    color: var(--text-primary, #303030);
+    cursor: default;
+    box-shadow: none;
+    border-bottom: none;
+  }
+
+  .reference-chat-header .align-left {
+    display: flex;
+    align-items: center;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .reference-chat-header .row {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  .reference-chat-header .info {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 3px;
+    overflow: hidden;
+  }
+
+  .reference-chat-header .title {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 22px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .reference-chat-header .presence {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 17px;
+    color: var(--text-secondary, #808080);
+    text-decoration: none;
+  }
+
+  .reference-chat-header .align-right {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .reference-chat-header :global(.chatheader-icon-button) {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    color: inherit;
+  }
+
+  @media (prefers-color-scheme: light) {
+    header.reference-chat-header {
+      background-color: #fff;
+    }
+  }
   header {
     display: flex;
     align-items: center;
+    box-sizing: border-box;
+    min-height: 60px;
     padding: 8px 0;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px));
     cursor: grab;
     flex-shrink: 0;
-    background-color: var(--bg-surface);
+    background-color: var(--bg-surface, #f6f6fb);
     z-index: 5;
   }
 
   .row {
     display: flex;
+    align-items: center;
     gap: 12px;
     cursor: pointer;
     flex: 1;
     min-width: 0;
-    padding-left: 15px;
+    padding-left: 6px;
   }
 
   header .info {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 3px;
     overflow: hidden;
     min-width: 0;
   }
 
   header .info .presence {
+    color: var(--text-secondary, #808080);
     font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -132,9 +254,10 @@
   }
 
   header .title {
-    color: var(--text-primary);
-    font-size: 18px;
-    flex: 1;
+    color: var(--text-primary, #111111);
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 600;
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;

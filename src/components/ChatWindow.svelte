@@ -676,10 +676,40 @@
     await new Promise((r) => setTimeout(r, 60));
     allRendered = true;
     isInitialMounting = false;
+    markChatRead();
     isProgrammaticScroll = false;
     window.addEventListener("mouseup", stopDrag);
     window.addEventListener("blur", stopDrag);
   });
+
+  // Отметка чата прочитанным: при открытии и при новых входящих, пока мы внизу чата.
+  // Счётчик обнуляется сразу (чат уходит из «Новых»), серверу уходит READ_MESSAGE (опкод 50).
+  let lastReadSentId = null;
+  async function markChatRead() {
+    const id = chat?.id ?? chatId;
+    const c = $currentSessionChats?.find((x) => String(x.id) === String(id));
+    if (!c || !(Number(c.newMessages || 0) > 0)) return;
+    if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+    const msgs = $messages || [];
+    let lastId = null;
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      if (msgs[i]?.id != null && /^\d+$/.test(String(msgs[i].id))) { lastId = String(msgs[i].id); break; }
+    }
+    if (!lastId && c.lastMessage?.id != null) lastId = String(c.lastMessage.id);
+    if (!lastId || lastId === lastReadSentId) return;
+    lastReadSentId = lastId;
+    currentSessionChats.update((list) =>
+      list ? list.map((x) => (String(x.id) === String(c.id) ? { ...x, newMessages: 0 } : x)) : list
+    );
+    try {
+      await $API.readMessage(c.id, lastId);
+    } catch (e) {
+      console.warn("READ_MESSAGE failed", e);
+      lastReadSentId = null;
+    }
+  }
+
+  $: if (allRendered && !showScrollDown && unreadBadgeCount > 0) markChatRead();
 
   async function jumpToBottom() {
     if (!loader.all_loaded_newer) {
@@ -1381,7 +1411,7 @@
   class:swiping={isSwipingChat}
   class:animating={!isSwipingChat && (currentDragX > 0 || isClosingBySwipe)}
   class:is-selecting={$isSelecting || isDragSelecting}
-  style={swipeStyle}
+  style={`${swipeStyle || ""}; background-color: #88c4ed; background-image: linear-gradient(165deg, #80bfff 0%, #88c4ed 55%, #9dd8cf 100%); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;`}
   use:swipeToClose={{
     canSwipe: () => !viewerOpen && !settingsShown && !dropoutActiveAt && !isClosingBySwipe,
     onClose: handleCloseChat,

@@ -1,3 +1,4 @@
+@import './styles/max-theme.css';
 :root {
   /* Высота нижнего таббара (Panel.svelte): 10 + 56 + max(safe-area, 10) */
   --panel-height: calc(66px + max(env(safe-area-inset-bottom, 0px), 10px));
